@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Plant Manager</string>
+    <string name="apps_list">Список растений</string>
+    <string name="schedule">Schedule</string>
+    <string name="add_plant">Новое растение</string>
+    <string name="plant_name_placeholder">Название растения</string>
+    <string name="plant_type_placeholder">Вид растения</string>
+    <string name="plant_age_placeholder">Возраст растения</string>
+    <string name="is_plant_home_switch">Комнатное растение</string>
+    <string name="add_button">Добавить</string>
+</resources>
