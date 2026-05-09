@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primaryColor"
-    android:onClick="openAddPage"
     tools:context=".MainActivity">
 
     <TextView
@@ -39,8 +38,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/openAddPageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
@@ -49,13 +48,20 @@
         android:onClick="openAddPage"
         android:pointerIcon="none"
         app:backgroundTint="@color/accentColor"
-        app:fabCustomSize="67dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:maxImageSize="36dp"
-        app:srcCompat="@android:drawable/ic_menu_add"
+        app:maxImageSize="32dp"
+        app:srcCompat="@drawable/add_24px"
         app:tint="@color/primaryColor"
         tools:ignore="ImageContrastCheck" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/plantsList"
+        android:layout_width="358dp"
+        android:layout_height="485dp"
+        android:padding="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

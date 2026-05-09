@@ -1,6 +1,5 @@
 package com.example.plantmanager;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -25,6 +24,7 @@ public class AddPlant extends AppCompatActivity {
     }
 
     public void closeAddPage(View v) {
+
         finish();
     }
 }
