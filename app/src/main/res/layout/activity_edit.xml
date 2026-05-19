@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/editPlantLayout"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/editPlantLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:onClick="editPlant">
 
     <TextView
         android:id="@+id/addEditTitleText"
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-smallcaps"
-        android:text="@string/add_plant"
+        android:text="@string/editPlantTitle"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -69,8 +70,8 @@
         android:layout_width="200sp"
         android:layout_height="50sp"
         android:backgroundTint="@color/accentColor"
-        android:onClick="closeAddPage"
-        android:text="@string/add_button"
+        android:onClick="editPlant"
+        android:text="@string/editButton"
         android:textColor="@color/primaryColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

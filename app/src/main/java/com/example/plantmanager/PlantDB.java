@@ -1,146 +1,132 @@
 package com.example.plantmanager;
 
-import java.sql.*;
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.*;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 import java.util.ArrayList;
+import java.util.Date;
+
 
 public class PlantDB {
-    private static Connection con;
-    private static Statement stab;
-    private static ResultSet result;
+    private static SQLiteDatabase db;
 
-    public static void connectToDB() throws ClassNotFoundException, SQLException  {
-        Class.forName("org.sqlite.JDBC");
-        con = DriverManager.getConnection("jdbc:sqlite:PlantsDB.db");
+    public static void connectToDB(Context context) {
+        db = context.openOrCreateDatabase("plants.db", MODE_PRIVATE, null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS \"plant_conditions\" (\n" +
+                "\t\"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t\"plant_id\"\tINTEGER,\n" +
+                "\t\"assessment_date\"\tTEXT,\n" +
+                "\t\"earth_dryness\"\tINTEGER,\n" +
+                "\t\"leafs_condition\"\tTEXT,\n" +
+                "\t\"branches_condition\"\tTEXT,\n" +
+                "\tFOREIGN KEY(\"plant_id\") REFERENCES \"plants\"(\"id\"),\n" +
+                "\tCHECK(\"earth_dryness\" >= 0 AND \"earth_dryness\" <= 5)\n" +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS \"plants\" (\n" +
+                "\t\"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t\"name\"\tTEXT UNIQUE,\n" +
+                "\t\"age\"\tINTEGER,\n" +
+                "\t\"type\"\tTEXT,\n" +
+                "\t\"indoor_outdoor\"\tTEXT,\n" +
+                "\tCHECK(\"indoor_outdoor\" = 'i' OR \"indoor_outdoor\" = 'o')\n" +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS \"plants_care_rules\" (\n" +
+                "\t\"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t\"plant_type\"\tTEXT UNIQUE,\n" +
+                "\t\"watering_interval_days\"\tINTEGER,\n" +
+                "\t\"fertilizer_interval_days\"\tINTEGER,\n" +
+                "\t\"lighting_type\"\tTEXT,\n" +
+                "\t\"spraying_interval_days \"\tINTEGER,\n" +
+                "\t\"min_temperature\"\tINTEGER,\n" +
+                "\t\"max_tempreature\"\tINTEGER,\n" +
+                "\t\"description\"\tINTEGER\n" +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS \"schedule\" (\n" +
+                "\t\"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "\t\"plant_id\"\tINTEGER,\n" +
+                "\t\"is_done\"\tINTEGER NOT NULL DEFAULT 0,\n" +
+                "\t\"action_date\"\tINTEGER,\n" +
+                "\t\"action_type\"\tTEXT,\n" +
+                "\t\"supplies_amount\"\tINTEGER,\n" +
+                "\tFOREIGN KEY(\"plant_id\") REFERENCES \"plants\"(\"id\"),\n" +
+                "\tCHECK(\"is_done\" = 1 OR \"is_done\" = 0)\n" +
+                ");");
     }
 
-    public static void closeConnection() throws SQLException {
-        result.close();
-        stab.close();
-        con.close();
+    public static void closeConnection() {
+        db.close();
     }
 
-    public static ArrayList<Plant> readPlantsDB()
-    {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            result = stab.executeQuery("SELECT * FROM plants");
-            ArrayList<Plant> plantsList = new ArrayList<>();
-            while(result.next()) {
-                Plant newPlant = new Plant(
-                        result.getInt("id"),
-                        result.getString("name"),
-                        result.getInt("age"),
-                        result.getString("type"),
-                        result.getString("indoor_outdoor"));
-                plantsList.add(newPlant);
-            }
-            closeConnection();
-            return plantsList;
+    public static ArrayList<Plant> getAllPlants(Context context) {
+        connectToDB(context);
+        String sql = "SELECT * FROM plants";
+        Cursor cursor = db.rawQuery(sql, null);
+        ArrayList<Plant> readPlants = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Plant currentPlant = new Plant(cursor.getInt(0),
+                    cursor.getString(1), cursor.getInt(2),
+                    cursor.getString(3), cursor.getString(4));
+            readPlants.add(currentPlant);
         }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+        cursor.close();
+        closeConnection();
+        return readPlants;
     }
 
-    public static void addPlantDB(Plant plantToAdd) {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            stab.executeUpdate(String.format("INSERT INTO plants (name, age, type) VALUES ('%s', %d, '%s')",
-                    plantToAdd.getName(), plantToAdd.getAge(), plantToAdd.getType()));
-            closeConnection();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+    public static void addPlant(Plant plant, Context context) {
+        connectToDB(context);
+        String sql = "INSERT INTO plants (name, age, type, indoor_outdoor) VALUES (?, ?, ?, ?)";
+        Object[] args = {plant.getName(), plant.getAge(), plant.getType(), plant.getIndoor_outdoor()};
+        db.execSQL(sql, args);
+        closeConnection();
     }
 
-    public static void deletePlantDB(Plant plantToDelete) {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            stab.executeUpdate(String.format("DELETE FROM plants WHERE name = '%s'", plantToDelete.getName()));
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+    public static void deletePlant(Plant plant, Context context) {
+        connectToDB(context);
+        Integer id = plant.getId();
+        String sql = "DELETE FROM plants WHERE id = ?";
+        Object[] args = {id};
+        db.execSQL(sql, args);
+        closeConnection();
     }
 
-    public static void addAssessmentDB(Plant assessmentPant, PlantCondition condition) {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            result = stab.executeQuery(String.format("SELECT id FROM plants WHERE name = '%s'", assessmentPant.getName()));
-            String sql = "INSERT INTO plant_conditions (plant_id, assessment_date, earth_dryness, " +
-                    "leafs_condition, branches_condition) VALUES (%d, '%s', %d, '%s', '%s')";
-            stab.executeUpdate(String.format(sql, result.getInt("id"), condition.getAssessmentDate(),
-                    condition.getEarthDryness(), condition.getLeafsCondition(), condition.getBranchesCondition()));
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+    public static void editPlant(Plant plant, Context context) {
+        connectToDB(context);
+        String sql = "UPDATE plants SET name=?, age=?, type=?, indoor_outdoor=? WHERE id = ?";
+        Object[] args = {plant.getName(), plant.getAge(), plant.getType(), plant.getIndoor_outdoor(), plant.getId()};
+        db.execSQL(sql, args);
+        closeConnection();
     }
 
-    public static void addCareAction(Plant carePlant, PlantCareAction action) {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            String sql = "INSERT INTO schedule (plant_id, action_date, action_type, supplies_amount) VALUES '%d', %s, %s, '%d'";
-            stab.executeUpdate(String.format(sql, carePlant.getId(), action.getActionDate().getTime(),
-                    action.getActionType(), action.getSuppliesAmount()));
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+    public static void addAction(PlantCareAction action, Context context) {
+        connectToDB(context);
+        String sql = "INSERT INTO schedule (plant_id, action_date, action_type, supplies_amount) VALUES (?, ?, ?, ?)";
+        Object[] args = {action.getPlantId(), action.getActionDate(), action.getActionType(), action.getSuppliesAmount()};
+        db.execSQL(sql, args);
+        closeConnection();
     }
 
-    public static void changePlant(Plant changedPlant) {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            String sql = "UPDATE TABLE plants SET name = '%s', age = '%d', type = '%s', indoor_outdoor = '%s' WHERE id = '%d'";
-            result = stab.executeQuery(String.format(sql, changedPlant.getName(), changedPlant.getAge(),
-                    changedPlant.getType(), changedPlant.getIndoor_outdoor(), changedPlant.getId()));
+    public static ArrayList<PlantCareAction> getAllActions(Context context) {
+        connectToDB(context);
+        String sql = "SELECT * FROM schedule";
+        Cursor cursor = db.rawQuery(sql, null);
+        ArrayList<PlantCareAction> readActions = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            PlantCareAction currentAction = new PlantCareAction(cursor.getInt(0),
+                    cursor.getInt(1), cursor.getInt(2),
+                    new Date(cursor.getLong(3)), cursor.getString(4),
+                    cursor.getInt(5)
+                );
+            readActions.add(currentAction);
         }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static void setActionMark(PlantCareAction action) {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            String sql = "UPDATE TABLE schedule SET is_done = 1 WHERE id = '%d'";
-            stab.executeUpdate(String.format(sql, action.getId()));
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public static ArrayList<PlantCareAction> readActionsByPlant(Plant plant) {
-        try {
-            connectToDB();
-            stab = con.createStatement();
-            String sql = "SELECT * FROM schedule WHERE plant_id = '%d'";
-            result = stab.executeQuery(String.format(sql, plant.getId()));
-            ArrayList<PlantCareAction> actions = new ArrayList<>();
-            while(result.next()) {
-                actions.add(new PlantCareAction(
-                        result.getInt("id"),
-                        result.getInt("is_done"),
-                        new Date(result.getLong("action_date")),
-                        result.getString("action_type"),
-                        result.getInt("supplies_amount")));
-            }
-            return actions;
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+        cursor.close();
+        closeConnection();
+        return readActions;
     }
 }

@@ -4,13 +4,15 @@ import java.util.Date;
 
 public class PlantCareAction {
     Integer id;
+    Integer plantId;
     Integer isDone;
     Date actionDate;
     String actionType;
     Integer suppliesAmount;
 
-    public PlantCareAction(Integer identifier, Integer isActionDone, Date plannedDate, String type, Integer amount) {
+    public PlantCareAction(Integer identifier, Integer actionPlantId, Integer isActionDone, Date plannedDate, String type, Integer amount) {
         id = identifier;
+        plantId = actionPlantId;
         isDone = isActionDone;
         actionDate = plannedDate;
         actionType = type;
@@ -19,6 +21,14 @@ public class PlantCareAction {
 
     public Integer getId() {
         return id;
+    }
+
+    public Integer getPlantId() {
+        return plantId;
+    }
+
+    public Integer getIsDone() {
+        return isDone;
     }
 
     public Integer getSuppliesAmount() {

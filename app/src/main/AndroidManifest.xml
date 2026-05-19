@@ -6,12 +6,23 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-
         android:icon="@drawable/plant_icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/plant_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.PlantManager">
+        <activity
+            android:name=".AssesmentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ScheduleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".edit"
+            android:exported="false" />
         <activity
             android:name=".AddPlant"
             android:exported="false" />
