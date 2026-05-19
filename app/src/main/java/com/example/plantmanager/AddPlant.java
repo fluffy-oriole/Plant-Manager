@@ -26,7 +26,7 @@ public class AddPlant extends AppCompatActivity {
         });
     }
 
-    public void closeAddPage(View v) {
+    public void addPlantAndClosePage(View v) {
         TextInputEditText nameField = findViewById(R.id.nameField);
         TextInputEditText typeField = findViewById(R.id.typeField);
         TextInputEditText ageField = findViewById(R.id.ageField);
@@ -51,5 +51,9 @@ public class AddPlant extends AppCompatActivity {
             MainActivity.adapter.setPlants(PlantDB.getAllPlants(this));
             finish();
         }
+    }
+
+    public void closeAddPage(View v) {
+        finish();
     }
 }

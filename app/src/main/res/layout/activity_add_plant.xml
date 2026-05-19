@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/editPlantLayout"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/editPlantLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:onClick="closeAddPage">
 
     <TextView
         android:id="@+id/addEditTitleText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-smallcaps"
+        android:gravity="center"
         android:text="@string/add_plant"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -69,7 +71,7 @@
         android:layout_width="200sp"
         android:layout_height="50sp"
         android:backgroundTint="@color/accentColor"
-        android:onClick="closeAddPage"
+        android:onClick="addPlantAndClosePage"
         android:text="@string/add_button"
         android:textColor="@color/primaryColor"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -87,5 +89,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addEditTitleText"
         app:srcCompat="@drawable/plant_icon" />
+
+    <ImageButton
+        android:id="@+id/goBackButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/lightGrey"
+        android:contentDescription="@string/go_back"
+        android:onClick="closeSchedule"
+        android:rotation="180"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/keyboard_arrow_right_24px"
+        app:tint="@color/textColor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

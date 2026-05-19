@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.setPlants(PlantDB.getAllPlants(this));
         recyclerView.setAdapter(adapter);
-
+/*
         PlantCareAction action1 = new PlantCareAction(0, 0, 0,
                 new Date(), "Полив", 100);
         PlantDB.addAction(action1, this);
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Plant sunflower = new Plant(0, "Подсолнух", 2,
                 "Подсолнух обыкновенный", "o");
         PlantDB.addPlant(sunflower, this);
-
+*/
     }
 
     public void openAddPage(View v) {

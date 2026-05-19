@@ -29,9 +29,9 @@
         android:layout_height="60dp"
         android:layout_weight="1"
         android:backgroundTint="@color/accentColor"
-        android:contentDescription="@string/btnChangePlant"
+        android:contentDescription="@string/go_back"
         app:srcCompat="@drawable/keyboard_arrow_right_24px"
-        app:tint="@color/primaryColor" />
+        app:tint="@color/lightGrey" />
 
 
 </LinearLayout>
