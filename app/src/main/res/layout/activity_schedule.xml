@@ -41,6 +41,8 @@
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:layout_weight="1"
         android:backgroundTint="@color/lightGrey"
         android:contentDescription="@string/go_back"

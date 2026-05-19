@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/editPlantLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:onClick="closeAddPage">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/addEditTitleText"

@@ -15,4 +15,8 @@
     <string name="editPlantTitle">Изменить растение</string>
     <string name="editButton">Изменить</string>
     <string name="go_back">Вернуться назад</string>
+    <string name="plant_assessment">Оценка состояния растения</string>
+
+    <string name="leafs_color">Цвет листьев</string>
+    <string name="earth_dryness">Состояние почвы</string>
 </resources>

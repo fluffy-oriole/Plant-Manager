@@ -82,4 +82,8 @@ public class EditActivity extends AppCompatActivity {
         finish();
 
     }
+
+    public void closeEditPage(View v) {
+        finish();
+    }
 }

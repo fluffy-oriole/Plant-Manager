@@ -1,6 +1,7 @@
 package com.example.plantmanager;
 
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class PlantCareAction {
     Integer id;
@@ -39,7 +40,13 @@ public class PlantCareAction {
         return actionType;
     }
 
+    public String getActionDate_s() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
+        return sdf.format(actionDate);
+    }
+
     public Date getActionDate() {
         return actionDate;
     }
+
 }
