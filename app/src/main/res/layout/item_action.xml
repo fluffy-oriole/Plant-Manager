@@ -17,8 +17,10 @@
             android:layout_width="131dp"
             android:layout_height="32dp"
             android:fontFamily="sans-serif-smallcaps"
+            android:gravity="bottom"
             android:minWidth="150dp"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/actionDate"

@@ -126,6 +126,20 @@ public class PlantDB {
         closeConnection();
     }
 
+    public static Plant getPlantById(int plantId, Context context) {
+        connectToDB(context);
+        Cursor cursor = db.rawQuery("SELECT * FROM plants WHERE id = ?",
+                new String[]{String.valueOf(plantId)});
+        Plant plant = null;
+        if (cursor.moveToFirst()) {
+            plant = new Plant(cursor.getInt(0), cursor.getString(1),
+                    cursor.getInt(2), cursor.getString(3), cursor.getString(4));
+        }
+        cursor.close();
+        closeConnection();
+        return plant;
+    }
+
     private static void generateScheduleEntries(int plantId, String actionType, int intervalDays) {
         if (intervalDays <= 0)
             return;
@@ -174,7 +188,7 @@ public class PlantDB {
 
     public static ArrayList<PlantCareAction> getAllActions(Context context) {
         connectToDB(context);
-        String sql = "SELECT * FROM schedule";
+        String sql = "SELECT * FROM schedule ORDER BY action_date";
         Cursor cursor = db.rawQuery(sql, null);
         ArrayList<PlantCareAction> readActions = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -188,5 +202,25 @@ public class PlantDB {
         cursor.close();
         closeConnection();
         return readActions;
+    }
+
+    public static void addCondition(int plantId, PlantCondition condition, Context context) {
+        connectToDB(context);
+        String sql = "INSERT INTO plant_conditions (plant_id, assessment_date, earth_dryness, leafs_condition, branches_condition) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        db.execSQL(sql, new Object[]{
+                plantId,
+                condition.getAssessmentDate().getTime(),
+                condition.getEarthDryness(),
+                condition.getLeafsCondition(),
+                condition.getBranchesCondition()
+        });
+        closeConnection();
+    }
+
+    public static void markActionDone(int actionId, Context context) {
+        connectToDB(context);
+        db.execSQL("UPDATE schedule SET is_done = 1 WHERE id = ?", new Object[]{actionId});
+        closeConnection();
     }
 }

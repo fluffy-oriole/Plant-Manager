@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -39,15 +40,20 @@ public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActio
         holder.actionType.setText(currentAction.getActionType());
         String currentPlantName = "";
         for (Plant plant : PlantsListAdapter.getPlants()) {
-            if (Objects.equals(plant.getId(), currentAction.getId())) {
+            if (Objects.equals(plant.getId(), currentAction.getPlantId())) {
                 currentPlantName = plant.getName();
                 break;
             }
         }
         holder.actionPlant.setText(currentPlantName);
         holder.actionDate.setText(currentAction.getActionDate_s());
-        Date today = new Date();
-        if (currentAction.getActionDate().before(today)) {
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+
+        if (currentAction.getActionDate().before(today.getTime())) {
             holder.actionDate.setTextColor(Color.RED);
         }
     }
@@ -74,6 +80,8 @@ public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActio
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), AssessmentActivity.class);
+                    intent.putExtra("plantId", action.getPlantId());
+                    intent.putExtra("actionId", action.getId());
                     v.getContext().startActivity(intent);
                 }
             });
