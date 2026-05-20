@@ -2,6 +2,8 @@ package com.example.plantmanager;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +13,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 public class AddPlant extends AppCompatActivity {
 
@@ -24,21 +28,28 @@ public class AddPlant extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
+        ArrayList<String> plantTypes = PlantDB.getAllPlantTypes(this);
+        ArrayAdapter<String> typesAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, plantTypes);
+        typesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        plantTypeSpinner.setAdapter(typesAdapter);
     }
 
     public void addPlantAndClosePage(View v) {
         TextInputEditText nameField = findViewById(R.id.nameField);
-        TextInputEditText typeField = findViewById(R.id.typeField);
+        Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
         TextInputEditText ageField = findViewById(R.id.ageField);
         Switch indoor_outdoor_switch = findViewById(R.id.indoor_outdoor_switch);
         String name;
         String type;
         int age;
         String indoor_outdoor;
-        if (nameField.getText() != null && typeField.getText() != null
+        if (nameField.getText() != null && plantTypeSpinner.getSelectedItem() != null
                 && ageField.getText() != null && indoor_outdoor_switch != null) {
             name = nameField.getText().toString();
-            type = typeField.getText().toString();
+            type = plantTypeSpinner.getSelectedItem().toString();
             age = Integer.parseInt(ageField.getText().toString());
             if (indoor_outdoor_switch.isChecked()) {
                 indoor_outdoor = "i";

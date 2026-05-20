@@ -35,6 +35,9 @@ public class AssessmentActivity extends AppCompatActivity {
         TextView plantName = findViewById(R.id.plantNameText);
         plantName.setText(PlantDB.getPlantById(plantId, this).getName());
 
+        TextView activityType = findViewById(R.id.activityType);
+        activityType.setText(PlantDB.getActionById(actionId, this).getActionType());
+
         Spinner leafsSpinner = findViewById(R.id.spinner);
         List<String> leafsOptions = Arrays.asList(
                 "Зелёный", "Желтоватый", "Жёлтый", "Коричневый"

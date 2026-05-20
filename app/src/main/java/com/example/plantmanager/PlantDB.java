@@ -140,6 +140,24 @@ public class PlantDB {
         return plant;
     }
 
+    public static PlantCareAction getActionById(int actionId, Context context) {
+        connectToDB(context);
+        Cursor cursor = db.rawQuery("SELECT * FROM schedule WHERE id = ?",
+                new String[]{String.valueOf(actionId)});
+        PlantCareAction action = null;
+        if (cursor.moveToFirst()) {
+            action = new PlantCareAction(cursor.getInt(0),
+                    cursor.getInt(1),
+                    cursor.getInt(2),
+                    new Date(cursor.getLong(3)),
+                    cursor.getString(4),
+                    cursor.getInt(5));
+        }
+        cursor.close();
+        closeConnection();
+        return action;
+    }
+
     private static void generateScheduleEntries(int plantId, String actionType, int intervalDays) {
         if (intervalDays <= 0)
             return;
@@ -188,7 +206,7 @@ public class PlantDB {
 
     public static ArrayList<PlantCareAction> getAllActions(Context context) {
         connectToDB(context);
-        String sql = "SELECT * FROM schedule ORDER BY action_date";
+        String sql = "SELECT * FROM schedule WHERE is_done = 0 ORDER BY action_date";
         Cursor cursor = db.rawQuery(sql, null);
         ArrayList<PlantCareAction> readActions = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -222,5 +240,17 @@ public class PlantDB {
         connectToDB(context);
         db.execSQL("UPDATE schedule SET is_done = 1 WHERE id = ?", new Object[]{actionId});
         closeConnection();
+    }
+
+    public static ArrayList<String> getAllPlantTypes(Context context) {
+        connectToDB(context);
+        Cursor cursor = db.rawQuery("SELECT plant_type FROM plants_care_rules", null);
+        ArrayList<String> types = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            types.add(cursor.getString(0));
+        }
+        cursor.close();
+        closeConnection();
+        return types;
     }
 }

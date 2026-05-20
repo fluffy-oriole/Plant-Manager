@@ -27,10 +27,11 @@
         android:layout_height="56sp"
         android:layout_marginTop="150dp"
         android:hint="@string/plant_name_placeholder"
+        android:background="@color/lightGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addEditTitleText" />
-
+    <!--
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/typeField"
         android:layout_width="289dp"
@@ -40,6 +41,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameField" />
+    -->
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/ageField"
@@ -47,9 +49,10 @@
         android:layout_height="56sp"
         android:layout_marginTop="24dp"
         android:hint="@string/plant_age_placeholder"
+        android:background="@color/lightGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typeField" />
+        app:layout_constraintTop_toBottomOf="@+id/plantTypeSpinner" />
 
     <Switch
         android:id="@+id/indoor_outdoor_switch"
@@ -104,5 +107,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/keyboard_arrow_right_24px"
         app:tint="@color/textColor" />
+
+    <Spinner
+        android:id="@+id/plantTypeSpinner"
+        android:layout_width="289sp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:background="@color/lightGrey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameField" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

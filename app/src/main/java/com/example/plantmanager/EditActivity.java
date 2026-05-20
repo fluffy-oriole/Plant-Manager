@@ -2,6 +2,8 @@ package com.example.plantmanager;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
@@ -12,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class EditActivity extends AppCompatActivity {
@@ -33,8 +36,19 @@ public class EditActivity extends AppCompatActivity {
         TextInputEditText ageEdit = findViewById(R.id.ageField);
         ageEdit.setText(getIntent().getStringExtra("plant_age"));
 
-        TextInputEditText typeField = findViewById(R.id.typeField);
-        typeField.setText(getIntent().getStringExtra("plant_type"));
+        Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
+        ArrayList<String> plantTypes = PlantDB.getAllPlantTypes(this);
+        ArrayAdapter<String> typesAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, plantTypes);
+        typesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        plantTypeSpinner.setAdapter(typesAdapter);
+
+// Выбираем текущий тип растения
+        String currentType = getIntent().getStringExtra("plant_type");
+        int currentTypeIndex = plantTypes.indexOf(currentType);
+        if (currentTypeIndex != -1) {
+            plantTypeSpinner.setSelection(currentTypeIndex);
+        }
 
         Switch typeSwitch = findViewById(R.id.indoor_outdoor_switch);
         if (Objects.equals(getIntent().getStringExtra("indoor_outdoor"), "i")) {
@@ -56,7 +70,7 @@ public class EditActivity extends AppCompatActivity {
 
         TextInputEditText nameEdit = findViewById(R.id.nameField);
         TextInputEditText ageEdit = findViewById(R.id.ageField);
-        TextInputEditText typeEdit = findViewById(R.id.typeField);
+        Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
         Switch indoorOutdoorSwitch = findViewById(R.id.indoor_outdoor_switch);
 
         String newName;
@@ -65,7 +79,7 @@ public class EditActivity extends AppCompatActivity {
         String newIndoorOutdoor;
         newName = nameEdit.getText().toString();
         newAge = Integer.parseInt(ageEdit.getText().toString());
-        newType = typeEdit.getText().toString();
+        newType = plantTypeSpinner.getSelectedItem().toString();
         if (indoorOutdoorSwitch.isChecked()) {
             newIndoorOutdoor = "i";
         }
