@@ -107,9 +107,9 @@ public class PlantDB {
 
         if (newPlantId != -1) {
             Cursor rulesCursor = db.rawQuery(
-                    "SELECT watering_interval_days, fertilizer_interval_days, spraying_interval_days" +
+                    "SELECT watering_interval_days, fertilizer_interval_days, spraying_interval_days " +
                             "FROM plants_care_rules WHERE plant_type = ?",
-                    new String[]{plant.getType()}
+                    new String[]{plant.getType().toLowerCase()}
             );
 
             if (rulesCursor.moveToFirst()) {
