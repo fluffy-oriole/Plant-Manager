@@ -29,9 +29,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/CareActionsRecycler"
-        android:layout_width="358dp"
+        android:layout_width="350dp"
         android:layout_height="609dp"
         android:backgroundTint="@color/primaryColor"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goBackButton" />
 
@@ -39,10 +40,9 @@
         android:id="@+id/goBackButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:layout_weight="1"
         android:backgroundTint="@color/lightGrey"
         android:contentDescription="@string/go_back"
