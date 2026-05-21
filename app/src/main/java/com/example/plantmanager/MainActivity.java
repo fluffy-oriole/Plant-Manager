@@ -12,10 +12,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Date;
-
 public class MainActivity extends AppCompatActivity {
     public static PlantsListAdapter adapter = new PlantsListAdapter();
+    private final PlantCareActionsAdapter todayAdapter = new PlantCareActionsAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter.setPlants(PlantDB.getAllPlants(this));
         recyclerView.setAdapter(adapter);
+
+        RecyclerView todayRecycler = findViewById(R.id.todayActionsList);
+        todayRecycler.setLayoutManager(new LinearLayoutManager(this));
+        todayAdapter.setActionsList(PlantDB.getTodayActions(this));
+        todayRecycler.setAdapter(todayAdapter);
     }
 
     public void openAddPage(View v) {

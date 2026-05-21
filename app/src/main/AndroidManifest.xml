@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlantManager">
         <activity
+            android:name=".PlantsListActivity"
+            android:exported="false" />
+        <activity
             android:name=".AssessmentActivity"
             android:exported="false" />
         <activity

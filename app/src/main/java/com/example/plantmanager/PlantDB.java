@@ -253,4 +253,39 @@ public class PlantDB {
         closeConnection();
         return types;
     }
+
+    public static ArrayList<PlantCareAction> getTodayActions(Context context) {
+        connectToDB(context);
+
+        Calendar startOfDay = Calendar.getInstance();
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0);
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+
+        Calendar endOfDay = Calendar.getInstance();
+        endOfDay.set(Calendar.HOUR_OF_DAY, 23);
+        endOfDay.set(Calendar.MINUTE, 59);
+        endOfDay.set(Calendar.SECOND, 59);
+        endOfDay.set(Calendar.MILLISECOND, 999);
+
+        String sql = "SELECT * FROM schedule WHERE is_done = 0 " +
+                "AND action_date >= ? AND action_date <= ? " +
+                "ORDER BY action_date";
+        Cursor cursor = db.rawQuery(sql, new String[]{
+                String.valueOf(startOfDay.getTimeInMillis()),
+                String.valueOf(endOfDay.getTimeInMillis())
+        });
+
+        ArrayList<PlantCareAction> result = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            result.add(new PlantCareAction(
+                    cursor.getInt(0), cursor.getInt(1), cursor.getInt(2),
+                    new Date(cursor.getLong(3)), cursor.getString(4), cursor.getInt(5)
+            ));
+        }
+        cursor.close();
+        closeConnection();
+        return result;
+    }
 }
