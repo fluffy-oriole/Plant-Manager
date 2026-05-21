@@ -92,12 +92,11 @@ public class EditActivity extends AppCompatActivity {
         currentPlant.setType(newType);
         currentPlant.setIndoor_outdoor(newIndoorOutdoor);
         PlantDB.editPlant(currentPlant, this);
-        MainActivity.adapter.setPlants(PlantDB.getAllPlants(v.getContext()));
+        PlantsListActivity.adapter.setPlants(PlantDB.getAllPlants(v.getContext()));
         finish();
-
     }
 
-    public void closeEditPage(View v) {
+    public void closePage(View v) {
         finish();
     }
 }

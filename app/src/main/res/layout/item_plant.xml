@@ -14,7 +14,6 @@
         android:fontFamily="sans-serif-smallcaps"
         android:gravity="center"
         android:minWidth="150dp"
-        android:textAlignment="textStart"
         android:textSize="16sp" />
 
     <Space
@@ -27,11 +26,10 @@
         android:layout_width="48dp"
         android:layout_height="64dp"
         android:layout_weight="1"
-        android:backgroundTint="@color/primaryColor"
+        android:backgroundTint="@android:color/transparent"
         android:contentDescription="@string/btnChangePlant"
         android:scaleX="1"
-        app:srcCompat="@drawable/edit_square_24px"
-        app:tint="@color/textColor" />
+        app:srcCompat="@drawable/edit_square_24px" />
 
     <Space
         android:layout_width="wrap_content"
@@ -43,7 +41,7 @@
         android:layout_width="48dp"
         android:layout_height="64dp"
         android:layout_weight="1"
-        android:backgroundTint="@color/primaryColor"
+        android:backgroundTint="@android:color/transparent"
         android:contentDescription="@string/btnDeletePlant"
         app:srcCompat="@drawable/remove_24px"
         app:tint="@color/textColor" />

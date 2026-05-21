@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Plant Manager</string>
     <string name="apps_list">Список растений</string>
+    <string name="show_plants_list">Посмотреть полный список</string>
     <string name="show_full_schedule">Посмотреть полное расписание</string>
     <string name="today_actions">Выполнить сегодня</string>
     <string name="schedule">Расписание</string>

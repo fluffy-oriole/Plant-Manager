@@ -59,12 +59,12 @@ public class AddPlant extends AppCompatActivity {
             }
             Plant plant = new Plant(-1, name, age, type, indoor_outdoor);
             PlantDB.addPlant(plant, this);
-            MainActivity.adapter.setPlants(PlantDB.getAllPlants(this));
+            PlantsListActivity.adapter.setPlants(PlantDB.getAllPlants(this));
             finish();
         }
     }
 
-    public void closeAddPage(View v) {
+    public void closePage(View v) {
         finish();
     }
 }

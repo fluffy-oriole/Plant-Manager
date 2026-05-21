@@ -16,7 +16,7 @@
         android:layout_weight="1"
         android:backgroundTint="@color/lightGrey"
         android:contentDescription="@string/go_back"
-        android:onClick="closeAssessmentPage"
+        android:onClick="closePage"
         android:rotation="180"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

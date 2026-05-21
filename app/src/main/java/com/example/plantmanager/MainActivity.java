@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
-    public static PlantsListAdapter adapter = new PlantsListAdapter();
     private final PlantCareActionsAdapter todayAdapter = new PlantCareActionsAdapter();
 
     @Override
@@ -28,10 +27,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        RecyclerView recyclerView = findViewById(R.id.plantsList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter.setPlants(PlantDB.getAllPlants(this));
-        recyclerView.setAdapter(adapter);
+
 
         RecyclerView todayRecycler = findViewById(R.id.todayActionsList);
         todayRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -39,13 +35,13 @@ public class MainActivity extends AppCompatActivity {
         todayRecycler.setAdapter(todayAdapter);
     }
 
-    public void openAddPage(View v) {
-        Intent intent = new Intent(this, AddPlant.class);
+    public void openSchedule(View v) {
+        Intent intent = new Intent(this, ScheduleActivity.class);
         startActivity(intent);
     }
 
-    public void openSchedule(View v) {
-        Intent intent = new Intent(this, ScheduleActivity.class);
+    public void openPlantsList(View v) {
+        Intent intent = new Intent(this, PlantsListActivity.class);
         startActivity(intent);
     }
 }

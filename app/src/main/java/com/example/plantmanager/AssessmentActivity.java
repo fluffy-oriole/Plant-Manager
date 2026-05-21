@@ -88,7 +88,8 @@ public class AssessmentActivity extends AppCompatActivity {
 
         finish();
     }
-    public void closeAssessmentPage(View v) {
+
+    public void closePage(View v) {
         finish();
     }
 }

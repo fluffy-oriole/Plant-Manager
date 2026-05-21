@@ -30,7 +30,7 @@ public class ScheduleActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    public void closeSchedule(View v) {
+    public void closePage(View v) {
         finish();
     }
 }
