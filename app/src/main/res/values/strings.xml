@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">Plant Manager</string>
     <string name="apps_list">Список растений</string>
-    <string name="show_plants_list">Посмотреть полный список</string>
-    <string name="show_full_schedule">Посмотреть полное расписание</string>
+    <string name="show_plants_list">Посмотреть список растений</string>
+    <string name="show_full_schedule">Посмотреть расписание</string>
     <string name="today_actions">Выполнить сегодня</string>
+
     <string name="schedule">Расписание</string>
+
     <string name="add_plant">Новое растение</string>
     <string name="plant_name_placeholder">Название растения</string>
     <string name="plant_type_placeholder">Вид растения</string>
@@ -12,11 +14,14 @@
     <string name="is_plant_home_switch">Комнатное растение</string>
     <string name="add_button">Добавить</string>
     <string name="main_plant_ico">Иконка растения</string>
+
     <string name="btnChangePlant">Изменить</string>
     <string name="btnDeletePlant">Удалить</string>
     <string name="editPlantTitle">Изменить растение</string>
     <string name="editButton">Изменить</string>
+
     <string name="go_back">Вернуться назад</string>
+
     <string name="plant_assessment">Оценка состояния</string>
     <string name="submit">Подтвердить</string>
 

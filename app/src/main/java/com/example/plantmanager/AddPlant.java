@@ -60,6 +60,7 @@ public class AddPlant extends AppCompatActivity {
             Plant plant = new Plant(-1, name, age, type, indoor_outdoor);
             PlantDB.addPlant(plant, this);
             PlantsListActivity.adapter.setPlants(PlantDB.getAllPlants(this));
+            MainActivity.selfLink.changeMakeTodayBlock();
             finish();
         }
     }

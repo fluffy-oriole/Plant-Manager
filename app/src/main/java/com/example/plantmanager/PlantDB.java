@@ -37,6 +37,7 @@ public class PlantDB {
                 "\tCHECK(\"indoor_outdoor\" = 'i' OR \"indoor_outdoor\" = 'o')\n" +
                 ");");
 
+
         db.execSQL("CREATE TABLE IF NOT EXISTS \"plants_care_rules\" (\n" +
                 "\t\"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t\"plant_type\"\tTEXT UNIQUE,\n" +
@@ -67,7 +68,9 @@ public class PlantDB {
         countOfTypes = cursor.getInt(0);
         if (Objects.equals(countOfTypes, 0)) {
             db.execSQL("INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, lighting_type, spraying_interval_days, min_temperature, max_tempreature, description) " +
-                    "VALUES ('роза', 5, 10, 'Прямой солнечный свет', 15, -5, 5, 'Описание')");
+                    "VALUES ('Роза', 5, 10, 'Прямой солнечный свет', 15, -5, 5, 'Описание')");
+            db.execSQL("INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, lighting_type, spraying_interval_days, min_temperature, max_tempreature, description) " +
+                    "VALUES ('Орхидея', 7, 14, 'Прямой солнечный свет', 18, -5, 5, 'Описание')");
         }
     }
 
@@ -109,17 +112,16 @@ public class PlantDB {
             Cursor rulesCursor = db.rawQuery(
                     "SELECT watering_interval_days, fertilizer_interval_days, spraying_interval_days " +
                             "FROM plants_care_rules WHERE plant_type = ?",
-                    new String[]{plant.getType().toLowerCase()}
+                    new String[]{plant.getType()}
             );
 
             if (rulesCursor.moveToFirst()) {
-                int wateringInterval   = rulesCursor.getInt(0);
-                int fertilizerInterval = rulesCursor.getInt(1);
-                int sprayingInterval   = rulesCursor.getInt(2);
+                long today = Calendar.getInstance().getTimeInMillis();
+                String sql2 = "INSERT INTO schedule (plant_id, action_date, action_type, supplies_amount) VALUES (?, ?, ?, ?)";
 
-                generateScheduleEntries(newPlantId, "Полив", wateringInterval);
-                generateScheduleEntries(newPlantId, "Удобрение", fertilizerInterval);
-                generateScheduleEntries(newPlantId, "Опрыскивание", sprayingInterval);
+                db.execSQL(sql2, new Object[]{newPlantId, today, "Полив", 0});
+                db.execSQL(sql2, new Object[]{newPlantId, today, "Удобрение", 0});
+                db.execSQL(sql2, new Object[]{newPlantId, today, "Опрыскивание", 0});
             }
             rulesCursor.close();
         }
@@ -159,25 +161,13 @@ public class PlantDB {
     }
 
     private static void generateScheduleEntries(int plantId, String actionType, int intervalDays) {
-        if (intervalDays <= 0)
-            return;
-
-        String sql = "INSERT INTO schedule (plant_id, action_date, action_type, supplies_amount) VALUES (?, ?, ?, ?)";
-
         Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, intervalDays);
 
-        long msInTwoWeeks = (long) 14 * 24 * 60 * 60 * 1000;
-        long endTime = cal.getTimeInMillis() + msInTwoWeeks;
-
-        while (cal.getTimeInMillis() <= endTime) {
-            db.execSQL(sql, new Object[]{
-                    plantId,
-                    cal.getTimeInMillis(),
-                    actionType,
-                    0 // TODO: сделать в бд количество ресурсов
-            });
-            cal.add(Calendar.DAY_OF_YEAR, intervalDays);
-        }
+        db.execSQL(
+                "INSERT INTO schedule (plant_id, action_date, action_type, supplies_amount) VALUES (?, ?, ?, ?)",
+                new Object[]{plantId, cal.getTimeInMillis(), actionType, 0}
+        );
     }
 
     public static void deletePlant(Plant plant, Context context) {
@@ -239,6 +229,37 @@ public class PlantDB {
     public static void markActionDone(int actionId, Context context) {
         connectToDB(context);
         db.execSQL("UPDATE schedule SET is_done = 1 WHERE id = ?", new Object[]{actionId});
+
+        Cursor cursor = db.rawQuery(
+                "SELECT plant_id, action_type FROM schedule WHERE id = ?",
+                new String[]{String.valueOf(actionId)}
+        );
+        cursor.moveToFirst();
+        int plantId = cursor.getInt(0);
+        String actionType = cursor.getString(1);
+
+
+        String intervalColumn;
+        if (Objects.equals(actionType, "Полив"))
+            intervalColumn = "watering_interval_days";
+        else if (Objects.equals(actionType, "Удобрение"))
+            intervalColumn = "fertilizer_interval_days";
+        else
+            intervalColumn = "spraying_interval_days";
+
+        Cursor rulesCursor = db.rawQuery(
+                "SELECT " + intervalColumn + " FROM plants_care_rules " +
+                        "JOIN plants ON plants.type = plants_care_rules.plant_type " +
+                        "WHERE plants.id = ?",
+                        new String[]{Integer.toString(plantId)}
+        );
+        if (rulesCursor.moveToFirst()) {
+            int interval = rulesCursor.getInt(0);
+            generateScheduleEntries(plantId, actionType, interval);
+        }
+        rulesCursor.close();
+
+        cursor.close();
         closeConnection();
     }
 
@@ -270,7 +291,7 @@ public class PlantDB {
         endOfDay.set(Calendar.MILLISECOND, 999);
 
         String sql = "SELECT * FROM schedule WHERE is_done = 0 " +
-                "AND action_date >= ? AND action_date <= ? " +
+                "AND action_date >= ? AND action_date <= ?" +
                 "ORDER BY action_date";
         Cursor cursor = db.rawQuery(sql, new String[]{
                 String.valueOf(startOfDay.getTimeInMillis()),

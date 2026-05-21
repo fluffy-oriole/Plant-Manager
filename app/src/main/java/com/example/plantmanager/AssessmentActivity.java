@@ -47,7 +47,6 @@ public class AssessmentActivity extends AppCompatActivity {
         leafsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         leafsSpinner.setAdapter(leafsAdapter);
 
-        // Spinner 2 — сухость земли (0=влажная .. 4=сухая, совпадает с CHECK 0..5 в БД)
         Spinner drynessSpinner = findViewById(R.id.spinner2);
         List<String> drynessOptions = Arrays.asList(
                 "Влажная", "Слегка влажная", "Нейтральная", "Слегка сухая", "Сухая"
@@ -57,7 +56,6 @@ public class AssessmentActivity extends AppCompatActivity {
         drynessAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         drynessSpinner.setAdapter(drynessAdapter);
 
-        // Spinner 3 — состояние веток
         Spinner branchesSpinner = findViewById(R.id.spinner3);
         List<String> branchesOptions = Arrays.asList(
                 "Здоровые", "Есть повреждения", "Сухие", "Сломанные"
@@ -85,7 +83,7 @@ public class AssessmentActivity extends AppCompatActivity {
             PlantDB.markActionDone(actionId, this);
             ScheduleActivity.adapter.setActionsList(PlantDB.getAllActions(this));
         }
-
+        MainActivity.selfLink.changeMakeTodayBlock();
         finish();
     }
 

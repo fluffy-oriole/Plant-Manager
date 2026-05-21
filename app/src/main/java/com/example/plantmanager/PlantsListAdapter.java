@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PlantsListAdapter extends RecyclerView.Adapter<PlantsListAdapter.PlantViewHolder> {
     private static ArrayList<Plant> plants = new ArrayList<>();
@@ -72,6 +73,7 @@ public class PlantsListAdapter extends RecyclerView.Adapter<PlantsListAdapter.Pl
                 public void onClick(View v) {
                     PlantDB.deletePlant(plant, v.getContext());
                     parent.setPlants(PlantDB.getAllPlants(v.getContext()));
+                    MainActivity.selfLink.changeMakeTodayBlock();
                 }
             });
         }

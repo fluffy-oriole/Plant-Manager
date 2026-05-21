@@ -1,8 +1,10 @@
 package com.example.plantmanager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,8 +14,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
-    private final PlantCareActionsAdapter todayAdapter = new PlantCareActionsAdapter();
+    public static MainActivity selfLink;
+    public static PlantCareActionsAdapter todayAdapter = new PlantCareActionsAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +33,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         RecyclerView todayRecycler = findViewById(R.id.todayActionsList);
         todayRecycler.setLayoutManager(new LinearLayoutManager(this));
-        todayAdapter.setActionsList(PlantDB.getTodayActions(this));
         todayRecycler.setAdapter(todayAdapter);
+        changeMakeTodayBlock();
+
+        selfLink = this;
     }
 
     public void openSchedule(View v) {
@@ -43,5 +49,20 @@ public class MainActivity extends AppCompatActivity {
     public void openPlantsList(View v) {
         Intent intent = new Intent(this, PlantsListActivity.class);
         startActivity(intent);
+    }
+
+    public void changeMakeTodayBlock() {
+        ArrayList<PlantCareAction> todayList = PlantDB.getTodayActions(this);
+        todayAdapter.setActionsList(todayList);
+        TextView makeTodayText = findViewById(R.id.todayTitle);
+        RecyclerView todayRecycler = findViewById(R.id.todayActionsList);
+        if (Objects.equals(todayList.size(), 0)) {
+            makeTodayText.setVisibility(View.GONE);
+            todayRecycler.setVisibility(View.GONE);
+        }
+        else {
+            makeTodayText.setVisibility(View.VISIBLE);
+            todayRecycler.setVisibility(View.VISIBLE);
+        }
     }
 }

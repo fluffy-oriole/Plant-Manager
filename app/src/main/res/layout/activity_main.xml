@@ -49,11 +49,12 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/show_full_schedule"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/todayActionsList" />
+        app:layout_constraintTop_toBottomOf="@+id/openPlantsList" />
 
     <Button
         android:id="@+id/openScheduleBtn"
@@ -96,6 +97,6 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/openScheduleBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/todayActionsList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
