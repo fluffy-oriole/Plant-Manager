@@ -40,7 +40,7 @@ public class AssessmentActivity extends AppCompatActivity {
 
         Spinner leafsSpinner = findViewById(R.id.spinner);
         List<String> leafsOptions = Arrays.asList(
-                "Зелёный", "Желтоватый", "Жёлтый", "Коричневый"
+                "Зелёный", "Жёлтый", "Коричневый", "Дырки на листьях", "Липкий налёт", "Белый налёт"
         );
         ArrayAdapter<String> leafsAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, leafsOptions);
@@ -58,7 +58,7 @@ public class AssessmentActivity extends AppCompatActivity {
 
         Spinner branchesSpinner = findViewById(R.id.spinner3);
         List<String> branchesOptions = Arrays.asList(
-                "Здоровые", "Есть повреждения", "Сухие", "Сломанные"
+                "Здоровые", "Поникшие", "Сухие", "Следы вредителей", "Бледные", "Темные"
         );
         ArrayAdapter<String> branchesAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, branchesOptions);
@@ -78,6 +78,7 @@ public class AssessmentActivity extends AppCompatActivity {
 
         if (plantId != -1) {
             PlantDB.addCondition(plantId, condition, this);
+            PlantDB.updateIntervals(plantId, this, PlantDB.getActionById(actionId, this).getActionType());
         }
         if (actionId != -1) {
             PlantDB.markActionDone(actionId, this);

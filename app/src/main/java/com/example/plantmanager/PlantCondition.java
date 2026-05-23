@@ -1,5 +1,6 @@
 package com.example.plantmanager;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class PlantCondition {
@@ -29,5 +30,10 @@ public class PlantCondition {
 
     public String getBranchesCondition() {
         return branchesCondition;
+    }
+
+    public static void defineChanges(float wateringCoefficient, float fertilizerCoefficient,
+                                     float sprayingCoefficient, ArrayList<PlantCondition> conditions) {
+
     }
 }
