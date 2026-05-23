@@ -53,9 +53,11 @@ public class AddPlant extends AppCompatActivity {
             name = nameField.getText().toString();
             if (Objects.equals("", name)) {
                 Toast.makeText(v.getContext(), "Введите название", Toast.LENGTH_SHORT).show();
+                return;
             }
             else if (name.length() > 16) {
                 Toast.makeText(v.getContext(), "Слишком длинное название", Toast.LENGTH_SHORT).show();
+                return;
             }
             type = plantTypeSpinner.getSelectedItem().toString();
 

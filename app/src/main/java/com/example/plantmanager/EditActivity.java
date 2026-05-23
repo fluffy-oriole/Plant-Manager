@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +44,6 @@ public class EditActivity extends AppCompatActivity {
         typesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         plantTypeSpinner.setAdapter(typesAdapter);
 
-// Выбираем текущий тип растения
         String currentType = getIntent().getStringExtra("plant_type");
         int currentTypeIndex = plantTypes.indexOf(currentType);
         if (currentTypeIndex != -1) {
@@ -78,8 +78,29 @@ public class EditActivity extends AppCompatActivity {
         String newType;
         String newIndoorOutdoor;
         newName = nameEdit.getText().toString();
-        newAge = Integer.parseInt(ageEdit.getText().toString());
         newType = plantTypeSpinner.getSelectedItem().toString();
+
+        if (Objects.equals("", newName)) {
+            Toast.makeText(v.getContext(), "Введите название", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (newName.length() > 16) {
+            Toast.makeText(v.getContext(), "Слишком длинное название", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (Objects.equals(ageEdit.getText().toString(), "")) {
+            Toast.makeText(v.getContext(), "Введите возраст", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            newAge = Integer.parseInt(ageEdit.getText().toString());
+        }
+        catch (NumberFormatException e) {
+            Toast.makeText(v.getContext(), "В поле возраста могут быть только цифры", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (indoorOutdoorSwitch.isChecked()) {
             newIndoorOutdoor = "i";
         }
