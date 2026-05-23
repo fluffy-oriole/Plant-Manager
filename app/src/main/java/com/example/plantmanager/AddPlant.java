@@ -1,5 +1,6 @@
 package com.example.plantmanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class AddPlant extends AppCompatActivity {
+    public static AddPlant selfLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class AddPlant extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        selfLink = this;
 
         Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
         ArrayList<String> plantTypes = PlantDB.getAllPlantTypes(this);
@@ -90,5 +94,19 @@ public class AddPlant extends AppCompatActivity {
 
     public void closePage(View v) {
         finish();
+    }
+
+    public void openAddNewTypePage(View v) {
+        Intent intent = new Intent(this, AddNewType.class);
+        startActivity(intent);
+    }
+
+    public void updatePlantTypes() {
+        Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
+        ArrayList<String> plantTypes = PlantDB.getAllPlantTypes(this);
+        ArrayAdapter<String> typesAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, plantTypes);
+        typesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        plantTypeSpinner.setAdapter(typesAdapter);
     }
 }

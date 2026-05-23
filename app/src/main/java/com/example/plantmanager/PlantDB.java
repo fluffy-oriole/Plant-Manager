@@ -511,4 +511,12 @@ public class PlantDB {
             return false;
         }
     }
+
+    public static void addNewType(Context context, String name, int waterDays, int fertilizerDays, int sprayingDays) {
+        connectToDB(context);
+        String sql = "INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, spraying_interval_days) VALUES (?, ?, ?, ?)";
+        Object[] args = {name, waterDays, fertilizerDays, sprayingDays};
+        db.execSQL(sql, args);
+        closeConnection();
+    }
 }

@@ -4,11 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:background="@color/lightGrey"
+    android:paddingStart="16dp"
+    android:paddingBottom="1dp"
+    android:paddingTop="1dp"
+    android:paddingEnd="16dp"
+    android:layout_marginBottom="6dp"
     android:orientation="horizontal"
     android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="268dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -17,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:fontFamily="sans-serif-smallcaps"
-            android:gravity="bottom"
+            android:gravity="start|center_vertical"
             android:minWidth="150dp"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -35,13 +41,13 @@
             android:id="@+id/actionDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top" />
+            android:gravity="start|center_vertical" />
 
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/openActionButton"
-        android:layout_width="0dp"
+        android:layout_width="70dp"
         android:layout_height="64dp"
         android:layout_weight="1"
         android:backgroundTint="@color/accentColor"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <application
         android:allowBackup="true"
@@ -10,10 +10,11 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/plant_icon"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PlantManager">
+        android:theme="@style/Theme.PlantManager" >
         <activity
-            android:name=".add_new_type"
-            android:exported="false" />
+            android:name=".AddNewType"
+            android:exported="false"
+            android:theme="@style/Theme.PlantManager" />
         <activity
             android:name=".PlantsListActivity"
             android:exported="false" />
@@ -27,14 +28,11 @@
             android:name=".EditActivity"
             android:exported="false" />
         <activity
-            android:name=".edit"
-            android:exported="false" />
-        <activity
             android:name=".AddPlant"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

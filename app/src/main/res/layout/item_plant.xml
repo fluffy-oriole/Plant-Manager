@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="@color/lightGrey"
     android:padding="16dp">
 
     <TextView
@@ -12,7 +13,7 @@
         android:layout_height="32dp"
         android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-smallcaps"
-        android:gravity="center"
+        android:gravity="start|center_vertical"
         android:minWidth="150dp"
         android:textSize="16sp" />
 

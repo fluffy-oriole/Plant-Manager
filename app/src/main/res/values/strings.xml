@@ -31,7 +31,10 @@
     <string name="make_action">Выполните</string>
 
 
-    <string name="how_often_watering">Как часто нужно поливать (в днях)</string>
-    <string name="how_often_fertilizing">Как часто нужно удобрять (в днях)</string>
-    <string name="how_often_spraying">Как часто нужно опрыскивать (в днях)</string>
+    <string name="new_type_name">Название вида</string>
+    <string name="how_often_watering">Как часто нужно поливать</string>
+    <string name="how_often_fertilizing">Как часто нужно удобрять</string>
+    <string name="how_often_spraying">Как часто нужно опрыскивать</string>
+    <string name="add_new_type">Добавить новый вид</string>
+    <string name="add_new_type_link">Нет нужного вида?</string>
 </resources>
