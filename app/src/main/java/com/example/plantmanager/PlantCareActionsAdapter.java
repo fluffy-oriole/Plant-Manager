@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Objects;
 
 public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActionsAdapter.ActionViewHolder> {
     ArrayList<PlantCareAction> actionsList = new ArrayList<>();
@@ -35,14 +34,8 @@ public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActio
         PlantCareAction currentAction = actionsList.get(position);
         holder.action = currentAction;
         holder.actionType.setText(currentAction.getActionType());
-        String currentPlantName = "";
-        for (Plant plant : PlantsListAdapter.getPlants()) {
-            if (Objects.equals(plant.getId(), currentAction.getPlantId())) {
-                currentPlantName = plant.getName();
-                break;
-            }
-        }
-        holder.actionPlant.setText(currentPlantName);
+        String plantName = PlantDB.getPlantById(holder.action.getPlantId(), holder.itemView.getContext()).getName();
+        holder.actionPlant.setText(plantName);
         holder.actionDate.setText(currentAction.getActionDate_s());
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);

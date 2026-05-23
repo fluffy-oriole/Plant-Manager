@@ -9,15 +9,13 @@ public class PlantCareAction {
     Integer isDone;
     Date actionDate;
     String actionType;
-    Integer suppliesAmount;
 
-    public PlantCareAction(Integer identifier, Integer actionPlantId, Integer isActionDone, Date plannedDate, String type, Integer amount) {
+    public PlantCareAction(Integer identifier, Integer actionPlantId, Integer isActionDone, Date plannedDate, String type) {
         id = identifier;
         plantId = actionPlantId;
         isDone = isActionDone;
         actionDate = plannedDate;
         actionType = type;
-        suppliesAmount = amount;
     }
 
     public Integer getId() {
@@ -30,10 +28,6 @@ public class PlantCareAction {
 
     public Integer getIsDone() {
         return isDone;
-    }
-
-    public Integer getSuppliesAmount() {
-        return suppliesAmount;
     }
 
     public String getActionType() {

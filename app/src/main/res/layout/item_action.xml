@@ -8,41 +8,45 @@
     android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="268dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/actionType"
-            android:layout_width="131dp"
+            android:layout_width="match_parent"
             android:layout_height="32dp"
             android:fontFamily="sans-serif-smallcaps"
             android:gravity="bottom"
             android:minWidth="150dp"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/actionPlant"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:gravity="start|center_vertical"
+            android:minWidth="140dp"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/actionDate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:gravity="top" />
 
-    <TextView
-        android:id="@+id/actionPlant"
-        android:layout_width="134dp"
-        android:layout_height="32dp"
-        android:fontFamily="sans-serif-smallcaps"
-        android:minWidth="150dp"
-        android:textSize="16sp" />
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/openActionButton"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_width="60dp"
+        android:layout_height="64dp"
         android:layout_weight="1"
         android:backgroundTint="@color/accentColor"
         android:contentDescription="@string/make_action"
+        android:maxWidth="48dp"
         app:srcCompat="@drawable/check_24px"
         app:tint="@color/lightGrey" />
 

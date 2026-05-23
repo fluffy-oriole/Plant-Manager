@@ -50,11 +50,12 @@ public class PlantDB {
         Cursor cursor = db.rawQuery(sql, null);
         cursor.moveToFirst();
         countOfTypes = cursor.getInt(0);
+        cursor.close();
         if (countOfTypes < 2) {
-            db.execSQL("INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, lighting_type, spraying_interval_days, min_temperature, max_tempreature, description) " +
-                    "VALUES ('Роза', 5, 10, 'Прямой солнечный свет', 15, -5, 5, 'Описание')");
-            db.execSQL("INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, lighting_type, spraying_interval_days, min_temperature, max_tempreature, description) " +
-                    "VALUES ('Орхидея', 7, 14, 'Прямой солнечный свет', 18, -5, 5, 'Описание')");
+            db.execSQL("INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, spraying_interval_days) " +
+                    "VALUES ('Роза', 5, 10, 15)");
+            db.execSQL("INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, spraying_interval_days) " +
+                    "VALUES ('Орхидея', 7, 14, 18)");
         }
 
         db.execSQL("CREATE TABLE IF NOT EXISTS \"schedule\" (\n" +
@@ -78,7 +79,6 @@ public class PlantDB {
                 "spraying_interval_days INTEGER,\n" +
                 "FOREIGN KEY(plant_id) REFERENCES plants(id)\n" +
                 ");");
-        cursor.close();
     }
 
     public static void closeConnection() {
@@ -169,8 +169,7 @@ public class PlantDB {
                     cursor.getInt(1),
                     cursor.getInt(2),
                     new Date(cursor.getLong(3)),
-                    cursor.getString(4),
-                    cursor.getInt(5));
+                    cursor.getString(4));
         }
         cursor.close();
         closeConnection();
@@ -212,9 +211,7 @@ public class PlantDB {
         while (cursor.moveToNext()) {
             PlantCareAction currentAction = new PlantCareAction(cursor.getInt(0),
                     cursor.getInt(1), cursor.getInt(2),
-                    new Date(cursor.getLong(3)), cursor.getString(4),
-                    cursor.getInt(5)
-            );
+                    new Date(cursor.getLong(3)), cursor.getString(4));
             readActions.add(currentAction);
         }
         cursor.close();
@@ -299,7 +296,7 @@ public class PlantDB {
         endOfDay.set(Calendar.MILLISECOND, 999);
 
         String sql = "SELECT * FROM schedule WHERE is_done = 0 " +
-                "AND action_date >= ? AND action_date <= ?" +
+                "AND action_date >= ? AND action_date <= ? " +
                 "ORDER BY action_date";
         Cursor cursor = db.rawQuery(sql, new String[]{
                 String.valueOf(startOfDay.getTimeInMillis()),
@@ -310,8 +307,7 @@ public class PlantDB {
         while (cursor.moveToNext()) {
             result.add(new PlantCareAction(
                     cursor.getInt(0), cursor.getInt(1), cursor.getInt(2),
-                    new Date(cursor.getLong(3)), cursor.getString(4), cursor.getInt(5)
-            ));
+                    new Date(cursor.getLong(3)), cursor.getString(4)));
         }
         cursor.close();
         closeConnection();
@@ -371,21 +367,6 @@ public class PlantDB {
         int sprayingInterval  = intervalCursor.getInt(2);
         intervalCursor.close();
 
-        boolean isInDate = true;
-        for (int i = 0; i < doneDates.size(); i++) {
-            Calendar assessmentCal = Calendar.getInstance();
-            assessmentCal.setTimeInMillis(assessmentDates.get(i));
-
-            Calendar plannedCal = Calendar.getInstance();
-            plannedCal.setTimeInMillis(doneDates.get(i));
-
-            if (assessmentCal.get(Calendar.YEAR) != plannedCal.get(Calendar.YEAR)
-                    || assessmentCal.get(Calendar.DAY_OF_YEAR) != plannedCal.get(Calendar.DAY_OF_YEAR)) {
-                isInDate = false;
-                break;
-            }
-        }
-
         float avgDryness = 0;
 
         int yellowLeafs = 0;
@@ -428,24 +409,29 @@ public class PlantDB {
         }
 
         boolean important = false;
+        boolean waterIntervalChanged = false;
 
         if (conditions.isEmpty()) {
             closeConnection();
             return;
         }
         avgDryness /= conditions.size();
-        if (avgDryness >= 3.0) {
+        if (avgDryness >= 3.0 && wateringInterval - (int)(wateringInterval * 0.15) >= 1) {
             wateringInterval -= (int)(wateringInterval * 0.15);
-        } else if (avgDryness <= 1.0) {
+            waterIntervalChanged = true;
+        } else if (avgDryness <= 1.0 && wateringInterval + (int)(wateringInterval * 0.15) <= 30) {
             wateringInterval += (int)(wateringInterval * 0.15);
+            waterIntervalChanged = true;
         }
 
-        if (yellowLeafs >= 2) {
+        if (yellowLeafs >= 2  && !waterIntervalChanged) {
             wateringInterval -= (int)(wateringInterval * 0.15);
+            waterIntervalChanged = true;
         }
-        if (brownLeafs >= 2) {
+        if (brownLeafs >= 2  && !waterIntervalChanged) {
             wateringInterval += (int)(wateringInterval * 0.15);
             sprayingInterval += (int)(sprayingInterval * 0.15);
+            waterIntervalChanged = true;
         }
         if (holesLeafs >= 1) {
             generateScheduleEntries(plantId, "Обработать инсектицидом", 0);
@@ -458,11 +444,13 @@ public class PlantDB {
             generateScheduleEntries(plantId, "Удалить поражённые листья и обработать фунгицидом", 0);
             important = true;
         }
-        if (droppingBranches >= 2) {
+        if (droppingBranches >= 2  && !waterIntervalChanged) {
             wateringInterval -= (int)(wateringInterval * 0.15);
+            waterIntervalChanged = true;
         }
-        if (dryBranches >= 2) {
+        if (dryBranches >= 2  && !waterIntervalChanged) {
             wateringInterval -= (int)(wateringInterval * 0.15);
+            waterIntervalChanged = true;
             generateScheduleEntries(plantId, "Удалить сухие ветки", 0);
         }
         if (pests >= 1) {
@@ -472,13 +460,13 @@ public class PlantDB {
         if (pale >= 2) {
             generateScheduleEntries(plantId, "Переставить в более светлое место", 0);
         }
-        if (dark >= 1) {
-            wateringInterval += (int)(wateringInterval * 0.3);
+        if (dark >= 1 && !waterIntervalChanged) {
+            wateringInterval += (int)(wateringInterval * 0.15);
             generateScheduleEntries(plantId, "Удалить пораженные ветки и обработать фунгицидом", 0);
             important = true;
         }
 
-        if (conditions.size() < 3 || important || !isInDate) {
+        if (conditions.size() < 3 || important) {
             closeConnection();
             return;
         }
