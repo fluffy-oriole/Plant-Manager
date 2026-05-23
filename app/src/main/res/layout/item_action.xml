@@ -42,8 +42,8 @@
         android:layout_height="60dp"
         android:layout_weight="1"
         android:backgroundTint="@color/accentColor"
-        android:contentDescription="@string/go_back"
-        app:srcCompat="@drawable/keyboard_arrow_right_24px"
+        android:contentDescription="@string/make_action"
+        app:srcCompat="@drawable/check_24px"
         app:tint="@color/lightGrey" />
 
 

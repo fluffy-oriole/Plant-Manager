@@ -2,7 +2,6 @@ package com.example.plantmanager;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.annotation.SuppressLint;
 import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -46,7 +45,7 @@ public class PlantDB {
                 "\t\"spraying_interval_days\"\tINTEGER\n" +
                 ");");
 
-        int countOfTypes = 0;
+        int countOfTypes;
         String sql = "SELECT count(*) FROM plants_care_rules";
         Cursor cursor = db.rawQuery(sql, null);
         cursor.moveToFirst();
@@ -79,6 +78,7 @@ public class PlantDB {
                 "spraying_interval_days INTEGER,\n" +
                 "FOREIGN KEY(plant_id) REFERENCES plants(id)\n" +
                 ");");
+        cursor.close();
     }
 
     public static void closeConnection() {
@@ -488,5 +488,37 @@ public class PlantDB {
                 new Object[]{wateringInterval, fertilizerInterval, sprayingInterval, plantId}
         );
         closeConnection();
+    }
+
+    public static boolean isTodayAssessmentDone(int plantId, Context context) {
+        connectToDB(context);
+
+        Calendar startOfDay = Calendar.getInstance();
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0);
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+
+        Calendar endOfDay = Calendar.getInstance();
+        endOfDay.set(Calendar.HOUR_OF_DAY, 23);
+        endOfDay.set(Calendar.MINUTE, 59);
+        endOfDay.set(Calendar.SECOND, 59);
+        endOfDay.set(Calendar.MILLISECOND, 999);
+
+        Cursor cursor = db.rawQuery("SELECT count(*) FROM plant_conditions " +
+                        "WHERE plant_id = ? AND assessment_date >= ? AND assessment_date <= ?",
+                new String[]{String.valueOf(plantId),String.valueOf(startOfDay.getTimeInMillis()),
+                        String.valueOf(endOfDay.getTimeInMillis())});
+
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        closeConnection();
+        if (count > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

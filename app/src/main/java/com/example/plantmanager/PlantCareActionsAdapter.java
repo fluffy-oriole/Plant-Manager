@@ -9,13 +9,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.graphics.Insets;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActionsAdapter.ActionViewHolder> {
@@ -56,6 +53,23 @@ public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActio
         if (currentAction.getActionDate().before(today.getTime())) {
             holder.actionDate.setTextColor(Color.RED);
         }
+        holder.openActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isTodayAssessmentDone = PlantDB.isTodayAssessmentDone(holder.action.getPlantId(), v.getContext());
+                if (isTodayAssessmentDone) {
+                    PlantDB.markActionDone(holder.action.getId(), v.getContext());
+                    ScheduleActivity.adapter.setActionsList(PlantDB.getAllActions(v.getContext()));
+                    MainActivity.selfLink.changeMakeTodayBlock();
+                }
+                else {
+                    Intent intent = new Intent(v.getContext(), AssessmentActivity.class);
+                    intent.putExtra("plantId", holder.action.getPlantId());
+                    intent.putExtra("actionId", holder.action.getId());
+                    v.getContext().startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -75,16 +89,6 @@ public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActio
             actionPlant = itemView.findViewById(R.id.actionPlant);
             openActionButton = itemView.findViewById(R.id.openActionButton);
             actionDate = itemView.findViewById(R.id.actionDate);
-
-            openActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), AssessmentActivity.class);
-                    intent.putExtra("plantId", action.getPlantId());
-                    intent.putExtra("actionId", action.getId());
-                    v.getContext().startActivity(intent);
-                }
-            });
         }
     }
 }
