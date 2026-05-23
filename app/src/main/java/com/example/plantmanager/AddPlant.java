@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AddPlant extends AppCompatActivity {
 
@@ -49,8 +51,27 @@ public class AddPlant extends AppCompatActivity {
         if (nameField.getText() != null && plantTypeSpinner.getSelectedItem() != null
                 && ageField.getText() != null && indoor_outdoor_switch != null) {
             name = nameField.getText().toString();
+            if (Objects.equals("", name)) {
+                Toast.makeText(v.getContext(), "Введите название", Toast.LENGTH_SHORT).show();
+            }
+            else if (name.length() > 16) {
+                Toast.makeText(v.getContext(), "Слишком длинное название", Toast.LENGTH_SHORT).show();
+            }
             type = plantTypeSpinner.getSelectedItem().toString();
-            age = Integer.parseInt(ageField.getText().toString());
+
+            if (Objects.equals(ageField.getText().toString(), "")) {
+                Toast.makeText(v.getContext(), "Введите возраст", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                age = Integer.parseInt(ageField.getText().toString());
+            }
+            catch (NumberFormatException e) {
+                Toast.makeText(v.getContext(), "В поле возраста могут быть только цифры", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+
             if (indoor_outdoor_switch.isChecked()) {
                 indoor_outdoor = "i";
             }

@@ -29,4 +29,9 @@
     <string name="earth_dryness">Состояние почвы</string>
     <string name="branches_condition">Состояние стебелей</string>
     <string name="make_action">Выполните</string>
+
+
+    <string name="how_often_watering">Как часто нужно поливать (в днях)</string>
+    <string name="how_often_fertilizing">Как часто нужно удобрять (в днях)</string>
+    <string name="how_often_spraying">Как часто нужно опрыскивать (в днях)</string>
 </resources>

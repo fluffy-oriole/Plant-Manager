@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlantManager">
         <activity
+            android:name=".add_new_type"
+            android:exported="false" />
+        <activity
             android:name=".PlantsListActivity"
             android:exported="false" />
         <activity
