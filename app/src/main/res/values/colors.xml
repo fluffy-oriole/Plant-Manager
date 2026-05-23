@@ -4,4 +4,5 @@
     <color name="accentColor">#24A25A</color>
     <color name="textColor">#615D64</color>
     <color name="lightGrey">#F0F0F0</color>
+    <color name="link">#0645AD</color>
 </resources>

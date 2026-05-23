@@ -125,11 +125,16 @@
     <TextView
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:text="@string/add_new_type_link"
+        android:layout_height="48dp"
+        android:gravity="center"
         android:onClick="openAddNewTypePage"
-        app:layout_constraintBottom_toTopOf="@+id/plantTypeSpinner"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="@string/add_new_type_link"
+        android:textColor="@color/link"
+        android:textStyle=""
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/indoor_outdoor_switch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
