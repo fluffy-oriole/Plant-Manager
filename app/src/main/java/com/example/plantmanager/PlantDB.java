@@ -572,34 +572,15 @@ public class PlantDB {
         closeConnection();
     }
 
-    public static void postponeWateringIfNeeded(int plantId, int days, Context context) {
+    public static void postponeWatering(int plantId, int days, Context context) {
         connectToDB(context);
 
-        // Берём последнюю оценку
-        Cursor cursor = db.rawQuery(
-                "SELECT earth_dryness, leafs_condition FROM plant_conditions " +
-                        "WHERE plant_id = ? ORDER BY assessment_date DESC LIMIT 1",
-                new String[]{String.valueOf(plantId)}
+        String sql = "UPDATE schedule SET action_date = action_date + ? WHERE id = (" +
+                    " SELECT id FROM schedule WHERE plant_id = ? AND action_type = 'Полив'" +
+                    "AND is_done = 0 ORDER BY action_date ASC LIMIT 1)";
+        db.execSQL(sql ,new Object[]{(long) days * 24 * 60 * 60 * 1000, plantId}
         );
 
-        if (cursor.moveToFirst()) {
-            int dryness      = cursor.getInt(0);
-            String leafs     = cursor.getString(1);
-            boolean soilTooWet   = dryness <= 1;
-            boolean leavesYellow = leafs.equals("Жёлтый");
-
-            if (soilTooWet || leavesYellow) {
-                db.execSQL(
-                        "UPDATE schedule SET action_date = action_date + ? " +
-                                "WHERE id = (" +
-                                "  SELECT id FROM schedule WHERE plant_id = ? AND action_type = 'Полив' AND is_done = 0 " +
-                                "  ORDER BY action_date ASC LIMIT 1" +
-                                ")",
-                        new Object[]{(long) days * 24 * 60 * 60 * 1000, plantId}
-                );
-            }
-        }
-        cursor.close();
         closeConnection();
     }
 }

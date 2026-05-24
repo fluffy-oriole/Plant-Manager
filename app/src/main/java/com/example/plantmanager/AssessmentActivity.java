@@ -22,6 +22,7 @@ import java.util.Objects;
 public class AssessmentActivity extends AppCompatActivity {
     private int plantId = -1;
     private int actionId = -1;
+    private boolean needToBePostponed = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +108,8 @@ public class AssessmentActivity extends AppCompatActivity {
 
         if (plantId != -1) {
             PlantDB.addCondition(plantId, condition, this);
-            PlantDB.postponeWateringIfNeeded(plantId, 2, this); // сразу после сохранения оценки
+            if (needToBePostponed)
+                PlantDB.postponeWatering(plantId, 2, this);
             PlantDB.updateIntervals(plantId, this, PlantDB.getActionById(actionId, this).getActionType());
         }
         if (actionId != -1) {
@@ -140,9 +142,11 @@ public class AssessmentActivity extends AppCompatActivity {
 
         if (isWatering && (soilTooWet || leafsAreYellow)) {
             actionHintText.setText("Отложить на 2 дня:");
+            needToBePostponed = true;
         }
         else {
             actionHintText.setText("Выполните:");
+            needToBePostponed = false;
         }
     }
 }
