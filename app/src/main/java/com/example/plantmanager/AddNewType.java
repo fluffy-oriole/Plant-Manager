@@ -38,7 +38,7 @@ public class AddNewType extends AppCompatActivity {
         TextInputEditText inputFertilizer= findViewById(R.id.inputFertilizer);
         TextInputEditText inputSpraying = findViewById(R.id.inputSpraying);
 
-        String name = inputWater.getText().toString();
+        String name = inputName.getText().toString();
         String water = inputWater.getText().toString();
         String fertilizer = inputFertilizer.getText().toString();
         String spraying = inputSpraying.getText().toString();

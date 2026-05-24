@@ -46,14 +46,12 @@ public class AddPlant extends AppCompatActivity {
     public void addPlantAndClosePage(View v) {
         TextInputEditText nameField = findViewById(R.id.nameField);
         Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
-        TextInputEditText ageField = findViewById(R.id.ageField);
         Switch indoor_outdoor_switch = findViewById(R.id.indoor_outdoor_switch);
         String name;
         String type;
-        int age;
         String indoor_outdoor;
         if (nameField.getText() != null && plantTypeSpinner.getSelectedItem() != null
-                && ageField.getText() != null && indoor_outdoor_switch != null) {
+                &&  indoor_outdoor_switch != null) {
             name = nameField.getText().toString();
             if (Objects.equals("", name)) {
                 Toast.makeText(v.getContext(), "Введите название", Toast.LENGTH_SHORT).show();
@@ -65,26 +63,13 @@ public class AddPlant extends AppCompatActivity {
             }
             type = plantTypeSpinner.getSelectedItem().toString();
 
-            if (Objects.equals(ageField.getText().toString(), "")) {
-                Toast.makeText(v.getContext(), "Введите возраст", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            try {
-                age = Integer.parseInt(ageField.getText().toString());
-            }
-            catch (NumberFormatException e) {
-                Toast.makeText(v.getContext(), "В поле возраста могут быть только цифры", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-
             if (indoor_outdoor_switch.isChecked()) {
                 indoor_outdoor = "i";
             }
             else {
                 indoor_outdoor = "o";
             }
-            Plant plant = new Plant(-1, name, age, type, indoor_outdoor);
+            Plant plant = new Plant(-1, name, type, indoor_outdoor);
             PlantDB.addPlant(plant, this);
             PlantsListActivity.adapter.setPlants(PlantDB.getAllPlants(this));
             MainActivity.selfLink.changeMakeTodayBlock();

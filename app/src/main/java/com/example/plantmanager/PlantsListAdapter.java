@@ -60,7 +60,6 @@ public class PlantsListAdapter extends RecyclerView.Adapter<PlantsListAdapter.Pl
                     Intent intent = new Intent(v.getContext(), EditActivity.class);
                     intent.putExtra("plant_id", plant.getId().toString());
                     intent.putExtra("plant_name", plant.getName());
-                    intent.putExtra("plant_age", plant.getAge().toString());
                     intent.putExtra("plant_type", plant.getType());
                     intent.putExtra("indoor_outdoor", plant.getIndoor_outdoor());
                     v.getContext().startActivity(intent);

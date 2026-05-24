@@ -31,7 +31,6 @@ public class PlantDB {
         db.execSQL("CREATE TABLE IF NOT EXISTS \"plants\" (\n" +
                 "\t\"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "\t\"name\"\tTEXT UNIQUE,\n" +
-                "\t\"age\"\tINTEGER,\n" +
                 "\t\"type\"\tTEXT,\n" +
                 "\t\"indoor_outdoor\"\tTEXT,\n" +
                 "\tCHECK(\"indoor_outdoor\" = 'i' OR \"indoor_outdoor\" = 'o')\n" +
@@ -69,10 +68,6 @@ public class PlantDB {
                 "\tCHECK(\"is_done\" = 1 OR \"is_done\" = 0)\n" +
                 ");");
 
-
-        db.execSQL("DROP TABLE IF EXISTS  care_coefficient");
-        db.execSQL("DROP TABLE IF EXISTS care_coefficient");
-
         db.execSQL("CREATE TABLE IF NOT EXISTS plant_care_intervals (\n" +
                 "plant_id INTEGER UNIQUE,\n" +
                 "watering_interval_days INTEGER,\n" +
@@ -93,8 +88,8 @@ public class PlantDB {
         ArrayList<Plant> readPlants = new ArrayList<>();
         while (cursor.moveToNext()) {
             Plant currentPlant = new Plant(cursor.getInt(0),
-                    cursor.getString(1), cursor.getInt(2),
-                    cursor.getString(3), cursor.getString(4));
+                    cursor.getString(1), cursor.getString(2),
+                    cursor.getString(3));
             readPlants.add(currentPlant);
         }
         cursor.close();
@@ -105,8 +100,8 @@ public class PlantDB {
     public static void addPlant(Plant plant, Context context) {
         connectToDB(context);
 
-        String insertSql = "INSERT INTO plants (name, age, type, indoor_outdoor) VALUES (?, ?, ?, ?)";
-        Object[] insertArgs = {plant.getName(), plant.getAge(), plant.getType(), plant.getIndoor_outdoor()};
+        String insertSql = "INSERT INTO plants (name, type, indoor_outdoor) VALUES (?, ?, ?)";
+        Object[] insertArgs = {plant.getName(), plant.getType(), plant.getIndoor_outdoor()};
         db.execSQL(insertSql, insertArgs);
 
         Cursor idCursor = db.rawQuery("SELECT last_insert_rowid()", null);
@@ -128,6 +123,9 @@ public class PlantDB {
                 int fertilizerInterval  = rulesCursor.getInt(1);
                 int sprayingInterval    = rulesCursor.getInt(2);
 
+                if (Objects.equals(plant.getIndoor_outdoor(), "o")) {
+                    wateringInterval -= (int)(wateringInterval * 0.2);
+                }
 
                 db.execSQL(
                         "INSERT INTO plant_care_intervals (plant_id, watering_interval_days, fertilizer_interval_days, spraying_interval_days) VALUES (?, ?, ?, ?)",
@@ -139,7 +137,9 @@ public class PlantDB {
 
                 db.execSQL(sql2, new Object[]{newPlantId, today, "Полив"});
                 db.execSQL(sql2, new Object[]{newPlantId, today, "Удобрение"});
-                db.execSQL(sql2, new Object[]{newPlantId, today, "Опрыскивание"});
+                if (Objects.equals(plant.getIndoor_outdoor(), "i")) {
+                    db.execSQL(sql2, new Object[]{newPlantId, today, "Опрыскивание"});
+                }
             }
             rulesCursor.close();
         }
@@ -153,7 +153,7 @@ public class PlantDB {
         Plant plant = null;
         if (cursor.moveToFirst()) {
             plant = new Plant(cursor.getInt(0), cursor.getString(1),
-                    cursor.getInt(2), cursor.getString(3), cursor.getString(4));
+                    cursor.getString(2), cursor.getString(3));
         }
         cursor.close();
         closeConnection();
@@ -198,9 +198,61 @@ public class PlantDB {
 
     public static void editPlant(Plant plant, Context context) {
         connectToDB(context);
-        String sql = "UPDATE plants SET name=?, age=?, type=?, indoor_outdoor=? WHERE id = ?";
-        Object[] args = {plant.getName(), plant.getAge(), plant.getType(), plant.getIndoor_outdoor(), plant.getId()};
-        db.execSQL(sql, args);
+
+        // Читаем старые значения до обновления
+        Cursor oldCursor = db.rawQuery(
+                "SELECT type, indoor_outdoor FROM plants WHERE id = ?",
+                new String[]{String.valueOf(plant.getId())}
+        );
+        String oldType = null;
+        String oldIndoorOutdoor = null;
+        if (oldCursor.moveToFirst()) {
+            oldType           = oldCursor.getString(0);
+            oldIndoorOutdoor  = oldCursor.getString(1);
+        }
+        oldCursor.close();
+
+        db.execSQL("UPDATE plants SET name=?, type=?, indoor_outdoor=? WHERE id = ?",
+                new Object[]{plant.getName(), plant.getType(), plant.getIndoor_outdoor(), plant.getId()});
+
+        boolean scheduleOutdated = !Objects.equals(oldType, plant.getType())
+                || !Objects.equals(oldIndoorOutdoor, plant.getIndoor_outdoor());
+
+        if (scheduleOutdated) {
+            db.execSQL("DELETE FROM schedule WHERE plant_id = ? AND is_done = 0 AND is_one_time = 0",
+                    new Object[]{plant.getId()});
+
+            Cursor rulesCursor = db.rawQuery(
+                    "SELECT watering_interval_days, fertilizer_interval_days, spraying_interval_days " +
+                            "FROM plants_care_rules WHERE plant_type = ?",
+                    new String[]{plant.getType()}
+            );
+            if (rulesCursor.moveToFirst()) {
+                int wateringInterval   = rulesCursor.getInt(0);
+                int fertilizerInterval = rulesCursor.getInt(1);
+                int sprayingInterval   = rulesCursor.getInt(2);
+                boolean isOutdoor = Objects.equals(plant.getIndoor_outdoor(), "o");
+
+                if (isOutdoor) {
+                    wateringInterval -= (int)(wateringInterval * 0.2);
+                }
+
+                db.execSQL(
+                        "UPDATE plant_care_intervals SET watering_interval_days=?, fertilizer_interval_days=?, spraying_interval_days=? WHERE plant_id=?",
+                        new Object[]{wateringInterval, fertilizerInterval, sprayingInterval, plant.getId()}
+                );
+
+                long today = Calendar.getInstance().getTimeInMillis();
+                String insertSql = "INSERT INTO schedule (plant_id, action_date, action_type) VALUES (?, ?, ?)";
+                db.execSQL(insertSql, new Object[]{plant.getId(), today, "Полив"});
+                db.execSQL(insertSql, new Object[]{plant.getId(), today, "Удобрение"});
+                if (!isOutdoor) {
+                    db.execSQL(insertSql, new Object[]{plant.getId(), today, "Опрыскивание"});
+                }
+            }
+            rulesCursor.close();
+        }
+
         closeConnection();
     }
 
@@ -451,7 +503,7 @@ public class PlantDB {
             waterIntervalChanged = true;
         }
         if (dryBranches >= 2  && !waterIntervalChanged) {
-            wateringInterval -= (int)(wateringInterval * 0.15);
+            wateringInterval += (int)(wateringInterval * 0.15);
             waterIntervalChanged = true;
             generateScheduleEntries(plantId, "Удалить сухие ветки", 0, 1);
         }
@@ -517,6 +569,37 @@ public class PlantDB {
         String sql = "INSERT INTO plants_care_rules (plant_type, watering_interval_days, fertilizer_interval_days, spraying_interval_days) VALUES (?, ?, ?, ?)";
         Object[] args = {name, waterDays, fertilizerDays, sprayingDays};
         db.execSQL(sql, args);
+        closeConnection();
+    }
+
+    public static void postponeWateringIfNeeded(int plantId, int days, Context context) {
+        connectToDB(context);
+
+        // Берём последнюю оценку
+        Cursor cursor = db.rawQuery(
+                "SELECT earth_dryness, leafs_condition FROM plant_conditions " +
+                        "WHERE plant_id = ? ORDER BY assessment_date DESC LIMIT 1",
+                new String[]{String.valueOf(plantId)}
+        );
+
+        if (cursor.moveToFirst()) {
+            int dryness      = cursor.getInt(0);
+            String leafs     = cursor.getString(1);
+            boolean soilTooWet   = dryness <= 1;
+            boolean leavesYellow = leafs.equals("Жёлтый");
+
+            if (soilTooWet || leavesYellow) {
+                db.execSQL(
+                        "UPDATE schedule SET action_date = action_date + ? " +
+                                "WHERE id = (" +
+                                "  SELECT id FROM schedule WHERE plant_id = ? AND action_type = 'Полив' AND is_done = 0 " +
+                                "  ORDER BY action_date ASC LIMIT 1" +
+                                ")",
+                        new Object[]{(long) days * 24 * 60 * 60 * 1000, plantId}
+                );
+            }
+        }
+        cursor.close();
         closeConnection();
     }
 }

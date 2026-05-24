@@ -34,9 +34,6 @@ public class EditActivity extends AppCompatActivity {
         TextInputEditText nameEdit = findViewById(R.id.nameField);
         nameEdit.setText(getIntent().getStringExtra("plant_name"));
 
-        TextInputEditText ageEdit = findViewById(R.id.ageField);
-        ageEdit.setText(getIntent().getStringExtra("plant_age"));
-
         Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
         ArrayList<String> plantTypes = PlantDB.getAllPlantTypes(this);
         ArrayAdapter<String> typesAdapter = new ArrayAdapter<>(
@@ -69,12 +66,10 @@ public class EditActivity extends AppCompatActivity {
         }
 
         TextInputEditText nameEdit = findViewById(R.id.nameField);
-        TextInputEditText ageEdit = findViewById(R.id.ageField);
         Spinner plantTypeSpinner = findViewById(R.id.plantTypeSpinner);
         Switch indoorOutdoorSwitch = findViewById(R.id.indoor_outdoor_switch);
 
         String newName;
-        int newAge;
         String newType;
         String newIndoorOutdoor;
         newName = nameEdit.getText().toString();
@@ -89,18 +84,6 @@ public class EditActivity extends AppCompatActivity {
             return;
         }
 
-        if (Objects.equals(ageEdit.getText().toString(), "")) {
-            Toast.makeText(v.getContext(), "Введите возраст", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        try {
-            newAge = Integer.parseInt(ageEdit.getText().toString());
-        }
-        catch (NumberFormatException e) {
-            Toast.makeText(v.getContext(), "В поле возраста могут быть только цифры", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (indoorOutdoorSwitch.isChecked()) {
             newIndoorOutdoor = "i";
         }
@@ -109,11 +92,11 @@ public class EditActivity extends AppCompatActivity {
         }
 
         currentPlant.setName(newName);
-        currentPlant.setAge(newAge);
         currentPlant.setType(newType);
         currentPlant.setIndoor_outdoor(newIndoorOutdoor);
         PlantDB.editPlant(currentPlant, this);
         PlantsListActivity.adapter.setPlants(PlantDB.getAllPlants(v.getContext()));
+        MainActivity.selfLink.changeMakeTodayBlock();
         finish();
     }
 

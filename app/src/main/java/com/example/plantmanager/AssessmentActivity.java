@@ -2,6 +2,7 @@ package com.example.plantmanager;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -12,8 +13,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class AssessmentActivity extends AppCompatActivity {
     private int plantId = -1;
@@ -49,7 +53,7 @@ public class AssessmentActivity extends AppCompatActivity {
 
         Spinner drynessSpinner = findViewById(R.id.spinner2);
         List<String> drynessOptions = Arrays.asList(
-                "Влажная", "Слегка влажная", "Нейтральная", "Слегка сухая", "Сухая"
+                "Влажная", "Слегка влажная", "Нормальная", "Слегка сухая", "Сухая"
         );
         ArrayAdapter<String> drynessAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, drynessOptions);
@@ -64,6 +68,31 @@ public class AssessmentActivity extends AppCompatActivity {
                 this, android.R.layout.simple_spinner_item, branchesOptions);
         branchesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         branchesSpinner.setAdapter(branchesAdapter);
+
+        TextView actionHintText = findViewById(R.id.textView8);
+        PlantCareAction currentAction = PlantDB.getActionById(actionId, this);
+
+
+        leafsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                makeOffsetIfNeed(currentAction, actionHintText);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+
+        drynessSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                makeOffsetIfNeed(currentAction, actionHintText);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
     public void makeAssessmentAndMarkAction(View v) {
         Spinner leafsSpinner    = findViewById(R.id.spinner);
@@ -78,6 +107,7 @@ public class AssessmentActivity extends AppCompatActivity {
 
         if (plantId != -1) {
             PlantDB.addCondition(plantId, condition, this);
+            PlantDB.postponeWateringIfNeeded(plantId, 2, this); // сразу после сохранения оценки
             PlantDB.updateIntervals(plantId, this, PlantDB.getActionById(actionId, this).getActionType());
         }
         if (actionId != -1) {
@@ -90,5 +120,29 @@ public class AssessmentActivity extends AppCompatActivity {
 
     public void closePage(View v) {
         finish();
+    }
+
+    private void makeOffsetIfNeed(PlantCareAction currentAction, TextView actionHintText) {
+        boolean isWatering = false;
+        if (currentAction.getActionType().equals("Полив"))
+            isWatering = true;
+
+        boolean soilTooWet = false;
+        Spinner drynessSpinner = findViewById(R.id.spinner2);
+        if (drynessSpinner.getSelectedItemPosition() <= 1)
+            soilTooWet = true;
+
+        boolean leafsAreYellow = false;
+        Spinner leafsSpinner = findViewById(R.id.spinner);
+        int leafsPosition = leafsSpinner.getSelectedItemPosition();
+        if (leafsPosition == 1)
+            leafsAreYellow = true;
+
+        if (isWatering && (soilTooWet || leafsAreYellow)) {
+            actionHintText.setText("Отложить на 2 дня:");
+        }
+        else {
+            actionHintText.setText("Выполните:");
+        }
     }
 }
