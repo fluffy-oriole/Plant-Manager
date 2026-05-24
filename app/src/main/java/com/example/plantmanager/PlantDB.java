@@ -290,11 +290,10 @@ public class PlantDB {
         connectToDB(context);
         db.execSQL("UPDATE schedule SET is_done = 1 WHERE id = ?", new Object[]{actionId});
 
-        Cursor cursor = db.rawQuery(
-                "SELECT plant_id, action_type, is_one_time FROM schedule WHERE id = ?",
-                new String[]{String.valueOf(actionId)}
-        );
+        String sqlGet = "SELECT plant_id, action_type, is_one_time FROM schedule WHERE id = ?";
+        Cursor cursor = db.rawQuery(sqlGet, new String[]{String.valueOf(actionId)});
         cursor.moveToFirst();
+
         int plantId = cursor.getInt(0);
         String actionType = cursor.getString(1);
         int isOneTime = cursor.getInt(2);
@@ -308,10 +307,9 @@ public class PlantDB {
             else
                 intervalColumn = "spraying_interval_days";
 
-            Cursor rulesCursor = db.rawQuery(
-                    "SELECT " + intervalColumn + " FROM plant_care_intervals WHERE plant_id = ?",
-                    new String[]{Integer.toString(plantId)}
-            );
+            String intervalsSql = "SELECT " + intervalColumn + " FROM plant_care_intervals WHERE plant_id = ?";
+            Cursor rulesCursor = db.rawQuery(intervalsSql, new String[]{Integer.toString(plantId)});
+
             if (rulesCursor.moveToFirst()) {
                 int interval = rulesCursor.getInt(0);
                 generateScheduleEntries(plantId, actionType, interval, 0);
@@ -349,13 +347,11 @@ public class PlantDB {
         endOfDay.set(Calendar.SECOND, 59);
         endOfDay.set(Calendar.MILLISECOND, 999);
 
-        String sql = "SELECT * FROM schedule WHERE is_done = 0 " +
-                "AND action_date >= ? AND action_date <= ? " +
-                "ORDER BY action_date";
-        Cursor cursor = db.rawQuery(sql, new String[]{
-                String.valueOf(startOfDay.getTimeInMillis()),
-                String.valueOf(endOfDay.getTimeInMillis())
-        });
+        String sql = "SELECT * FROM schedule WHERE is_done = 0 AND action_date >= ?" +
+                " AND action_date <= ? ORDER BY action_date";
+        String startOfDay_s = String.valueOf(startOfDay.getTimeInMillis());
+        String endOfDay_s = String.valueOf(endOfDay.getTimeInMillis());
+        Cursor cursor = db.rawQuery(sql, new String[]{startOfDay_s, endOfDay_s});
 
         ArrayList<PlantCareAction> result = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -370,52 +366,30 @@ public class PlantDB {
 
     public static void updateIntervals(int plantId, Context context, String action_type) {
         connectToDB(context);
-        Cursor doneCursor = db.rawQuery(
-                "SELECT action_date FROM schedule " +
-                        "WHERE plant_id = ? AND action_type = ? AND is_done = 1 " +
-                        "ORDER BY action_date DESC LIMIT 3",
-                new String[]{String.valueOf(plantId), action_type}
-        );
 
-        ArrayList<Long> doneDates = new ArrayList<>();
-        while (doneCursor.moveToNext()) {
-            doneDates.add(doneCursor.getLong(0));
-        }
-        doneCursor.close();
+        String sql = "SELECT assessment_date, earth_dryness, leafs_condition, branches_condition " +
+                "FROM plant_conditions WHERE plant_id = ? ORDER BY assessment_date DESC LIMIT 3";
+        Cursor assessmentsCursor = db.rawQuery(sql, new String[]{String.valueOf(plantId)});
 
-        Cursor assessmentsCursor = db.rawQuery(
-                "SELECT assessment_date, earth_dryness, leafs_condition, branches_condition " +
-                        "FROM plant_conditions " +
-                        "WHERE plant_id = ? " +
-                        "ORDER BY assessment_date DESC LIMIT 3",
-                new String[]{String.valueOf(plantId)}
-        );
-
-
-        ArrayList<Long> assessmentDates = new ArrayList<>();
         ArrayList<PlantCondition> conditions = new ArrayList<>();
         while (assessmentsCursor.moveToNext()) {
-            assessmentDates.add(assessmentsCursor.getLong(0));
             conditions.add(new PlantCondition(
                     assessmentsCursor.getInt(1),
                     assessmentsCursor.getString(2),
-                    assessmentsCursor.getString(3)
-            ));
+                    assessmentsCursor.getString(3)));
         }
         assessmentsCursor.close();
 
-        Cursor intervalCursor = db.rawQuery(
-                "SELECT watering_interval_days, fertilizer_interval_days, spraying_interval_days " +
-                        "FROM plant_care_intervals WHERE plant_id = ?",
-                new String[]{String.valueOf(plantId)}
-        );
-
-        if (!intervalCursor.moveToFirst()) {
-            intervalCursor.close();
+        if (conditions.isEmpty()) {
             closeConnection();
             return;
         }
 
+        String sqlInterval = "SELECT watering_interval_days, fertilizer_interval_days, spraying_interval_days " +
+                            "FROM plant_care_intervals WHERE plant_id = ?";
+        Cursor intervalCursor = db.rawQuery(sqlInterval, new String[]{String.valueOf(plantId)});
+
+        intervalCursor.moveToFirst();
         int wateringInterval  = intervalCursor.getInt(0);
         int fertilizerInterval = intervalCursor.getInt(1);
         int sprayingInterval  = intervalCursor.getInt(2);
@@ -465,10 +439,6 @@ public class PlantDB {
         boolean important = false;
         boolean waterIntervalChanged = false;
 
-        if (conditions.isEmpty()) {
-            closeConnection();
-            return;
-        }
         avgDryness /= conditions.size();
         if (avgDryness >= 3.0 && wateringInterval - (int)(wateringInterval * 0.15) >= 1) {
             wateringInterval -= (int)(wateringInterval * 0.15);
@@ -525,10 +495,8 @@ public class PlantDB {
             return;
         }
 
-        db.execSQL(
-                "UPDATE plant_care_intervals SET watering_interval_days = ?, fertilizer_interval_days = ?, spraying_interval_days = ? WHERE plant_id = ?",
-                new Object[]{wateringInterval, fertilizerInterval, sprayingInterval, plantId}
-        );
+        String updateSql = "UPDATE plant_care_intervals SET watering_interval_days = ?, fertilizer_interval_days = ?, spraying_interval_days = ? WHERE plant_id = ?";
+        db.execSQL(updateSql, new Object[]{wateringInterval, fertilizerInterval, sprayingInterval, plantId});
         closeConnection();
     }
 
@@ -547,15 +515,17 @@ public class PlantDB {
         endOfDay.set(Calendar.SECOND, 59);
         endOfDay.set(Calendar.MILLISECOND, 999);
 
-        Cursor cursor = db.rawQuery("SELECT count(*) FROM plant_conditions " +
-                        "WHERE plant_id = ? AND assessment_date >= ? AND assessment_date <= ?",
-                new String[]{String.valueOf(plantId),String.valueOf(startOfDay.getTimeInMillis()),
-                        String.valueOf(endOfDay.getTimeInMillis())});
+        String sql = "SELECT count(*) FROM plant_conditions WHERE plant_id = ? AND assessment_date >= ? AND assessment_date <= ?";
+        String plantId_s = String.valueOf(plantId);
+        String startOfDay_s = String.valueOf(startOfDay.getTimeInMillis());
+        String endOfDay_s = String.valueOf(endOfDay.getTimeInMillis());
 
+        Cursor cursor = db.rawQuery(sql, new String[]{plantId_s, startOfDay_s, endOfDay_s});
         cursor.moveToFirst();
         int count = cursor.getInt(0);
         cursor.close();
         closeConnection();
+
         if (count > 0) {
             return true;
         }
