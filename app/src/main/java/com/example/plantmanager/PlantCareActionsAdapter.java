@@ -63,6 +63,20 @@ public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActio
                 }
             }
         });
+
+        Calendar endOfDay = Calendar.getInstance();
+        endOfDay.set(Calendar.HOUR_OF_DAY, 23);
+        endOfDay.set(Calendar.MINUTE, 59);
+        endOfDay.set(Calendar.SECOND, 59);
+        endOfDay.set(Calendar.MILLISECOND, 999);
+
+        if (currentAction.getActionDate().after(endOfDay.getTime())) {
+            holder.openActionButton.setVisibility(View.GONE);
+        }
+        else {
+            holder.openActionButton.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
