@@ -1,6 +1,7 @@
 package com.example.plantmanager;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -71,10 +73,13 @@ public class PlantCareActionsAdapter extends RecyclerView.Adapter<PlantCareActio
         endOfDay.set(Calendar.MILLISECOND, 999);
 
         if (currentAction.getActionDate().after(endOfDay.getTime())) {
-            holder.openActionButton.setVisibility(View.GONE);
+            holder.openActionButton.setEnabled(false);
+            holder.openActionButton.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+
         }
         else {
-            holder.openActionButton.setVisibility(View.VISIBLE);
+            holder.openActionButton.setEnabled(true);
+            holder.openActionButton.setBackgroundTintList(ContextCompat.getColorStateList(holder.itemView.getContext(), R.color.accentColor));
         }
 
     }
