@@ -1,13 +1,12 @@
 package com.example.plantmanager;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class PlantCondition {
-    Date assessmentDate;
-    Integer earthDryness;
-    String leafsCondition;
-    String branchesCondition;
+    private final Date assessmentDate;
+    private final Integer earthDryness;
+    private final String leafsCondition;
+    private final String branchesCondition;
 
     public PlantCondition(Integer dryness, String leafs, String branches) {
         assessmentDate = new Date();
@@ -30,10 +29,5 @@ public class PlantCondition {
 
     public String getBranchesCondition() {
         return branchesCondition;
-    }
-
-    public static void defineChanges(float wateringCoefficient, float fertilizerCoefficient,
-                                     float sprayingCoefficient, ArrayList<PlantCondition> conditions) {
-
     }
 }

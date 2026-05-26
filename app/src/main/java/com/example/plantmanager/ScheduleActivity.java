@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ScheduleActivity extends AppCompatActivity {
-    public static  PlantCareActionsAdapter adapter = new PlantCareActionsAdapter();
+    public static PlantCareActionsAdapter adapter = new PlantCareActionsAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

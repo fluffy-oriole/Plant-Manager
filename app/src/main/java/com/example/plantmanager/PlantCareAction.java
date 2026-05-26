@@ -4,11 +4,11 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class PlantCareAction {
-    Integer id;
-    Integer plantId;
-    Integer isDone;
-    Date actionDate;
-    String actionType;
+    private final Integer id;
+    private final Integer plantId;
+    private final Integer isDone;
+    private final Date actionDate;
+    private final String actionType;
 
     public PlantCareAction(Integer identifier, Integer actionPlantId, Integer isActionDone, Date plannedDate, String type) {
         id = identifier;
@@ -24,10 +24,6 @@ public class PlantCareAction {
 
     public Integer getPlantId() {
         return plantId;
-    }
-
-    public Integer getIsDone() {
-        return isDone;
     }
 
     public String getActionType() {
