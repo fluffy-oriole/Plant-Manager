@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.model;
 
 import static android.content.Context.MODE_PRIVATE;
 

@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.model;
 
 public class Plant {
     private final Integer id;

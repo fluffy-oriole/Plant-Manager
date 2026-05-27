@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.controller;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,11 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.example.plantmanager.R;
+import com.example.plantmanager.model.PlantCareAction;
+import com.example.plantmanager.model.PlantCondition;
+import com.example.plantmanager.model.PlantDB;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class AssessmentActivity extends AppCompatActivity {
     private int plantId = -1;

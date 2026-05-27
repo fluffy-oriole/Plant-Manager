@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.plantmanager.R;
+import com.example.plantmanager.model.PlantDB;
 
 public class PlantsListActivity extends AppCompatActivity {
     public static PlantsListAdapter adapter = new PlantsListAdapter();

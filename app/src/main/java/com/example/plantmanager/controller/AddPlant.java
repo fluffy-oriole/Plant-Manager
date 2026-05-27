@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.plantmanager.R;
+import com.example.plantmanager.model.Plant;
+import com.example.plantmanager.model.PlantDB;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;

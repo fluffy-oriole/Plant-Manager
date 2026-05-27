@@ -12,26 +12,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlantManager" >
         <activity
-            android:name=".AddNewType"
+            android:name=".controller.AddNewType"
             android:exported="false"
             android:theme="@style/Theme.PlantManager" />
         <activity
-            android:name=".PlantsListActivity"
+            android:name=".controller.PlantsListActivity"
             android:exported="false" />
         <activity
-            android:name=".AssessmentActivity"
+            android:name=".controller.AssessmentActivity"
             android:exported="false" />
         <activity
-            android:name=".ScheduleActivity"
+            android:name=".controller.ScheduleActivity"
             android:exported="false" />
         <activity
-            android:name=".EditActivity"
+            android:name=".controller.EditActivity"
             android:exported="false" />
         <activity
-            android:name=".AddPlant"
+            android:name=".controller.AddPlant"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".controller.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

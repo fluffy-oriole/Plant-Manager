@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.controller;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +10,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.plantmanager.R;
+import com.example.plantmanager.model.PlantDB;
 
 public class ScheduleActivity extends AppCompatActivity {
     public static PlantCareActionsAdapter adapter = new PlantCareActionsAdapter();

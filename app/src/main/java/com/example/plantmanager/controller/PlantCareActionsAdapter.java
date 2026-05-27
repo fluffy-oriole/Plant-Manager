@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.controller;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -12,6 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.plantmanager.R;
+import com.example.plantmanager.model.PlantCareAction;
+import com.example.plantmanager.model.PlantDB;
 
 import java.util.ArrayList;
 import java.util.Calendar;

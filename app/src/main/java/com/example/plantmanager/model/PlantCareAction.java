@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.model;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;

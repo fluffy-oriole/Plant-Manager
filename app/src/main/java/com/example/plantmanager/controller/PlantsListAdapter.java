@@ -1,4 +1,4 @@
-package com.example.plantmanager;
+package com.example.plantmanager.controller;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +8,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.plantmanager.R;
+import com.example.plantmanager.model.Plant;
+import com.example.plantmanager.model.PlantDB;
+
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class PlantsListAdapter extends RecyclerView.Adapter<PlantsListAdapter.PlantViewHolder> {
     private static ArrayList<Plant> plants = new ArrayList<>();
